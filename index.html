@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI DAGO | Pantau Selokan Cekatan, Bebas Banjir Kota Bogor</title>
+    <meta name="description" content="Sistem monitoring banjir cerdas dan deteksi sampah di selokan Kota Bogor secara real-time untuk seluruh warga.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,300..900;1,300..900&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- 1. Top Status Banner Bar (Red/Yellow/Green based on City State) -->
+    <div class="top-status-bar status-aman">
+        <i class="bx bx-shield-check"></i> Status Kota Bogor Saat Ini: <strong>AMAN</strong> — Update Terkini: <span class="update-time-str">10:32 WIB</span>
+    </div>
+
+    <!-- 2. Header & Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="brand">
+                <i class="bx bx-water"></i>
+                <div class="brand-text">
+                    <h1>SI DAGO</h1>
+                    <span>Pantau Selokan Bogor</span>
+                </div>
+            </a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Buka Menu">
+                <i class="bx bx-menu"></i>
+            </button>
+            <nav class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link active">Beranda</a>
+                <a href="pantau.html" class="nav-link">Pantau Sekarang</a>
+                <a href="peta.html" class="nav-link">Peta Selokan</a>
+                <a href="cara-kerja.html" class="nav-link">Cara Kerja</a>
+                <a href="notifikasi.html" class="nav-link">Daftar Telegram</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 3. Hero Section (Bogor Status & Mount Salak Silhouette) -->
+    <section class="hero">
+        <div class="mega-mendung-bg"></div>
+        <div class="hero-content">
+            <div class="hero-label">Kondisi Selokan Kota Bogor</div>
+            <div class="hero-status-box status-aman">
+                <div class="hero-status-text">🟢 AMAN</div>
+            </div>
+            <h2 class="hero-title">Bogor Hari Ini Cenderung Kondusif</h2>
+            <p class="hero-subtitle">Seluruh 12 titik pantau sensor selokan dalam status normal. Aliran air lancar dan tidak ada penumpukan sampah kritis.</p>
+            <div class="hero-buttons">
+                <a href="notifikasi.html" class="btn btn-primary"><i class="bx bx-bell"></i> Aktifkan Peringatan</a>
+                <a href="peta.html" class="btn btn-secondary"><i class="bx bx-map-alt"></i> Lihat Peta Selokan</a>
+            </div>
+        </div>
+        <!-- Mount Salak Background SVG Transition -->
+        <svg class="salak-silhouette" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120 L0 80 L350 40 L600 95 L900 15 L1200 85 L1440 60 L1440 120 Z" fill="#F5F0E8" opacity="1"></path>
+            <path d="M0 120 L0 95 L400 65 L700 102 L950 35 L1250 90 L1440 75 L1440 120 Z" fill="#EAE3D2" opacity="0.4"></path>
+        </svg>
+    </section>
+
+    <!-- 4. 3 Titik Pantau Terdekat Cards Section -->
+    <section class="section section-krem">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Status Titik Selokan Utama</h2>
+                <p class="section-desc">Berikut adalah pembacaan sensor terbaru dari 3 titik gorong-gorong utama Kota Bogor.</p>
+            </div>
+            
+            <div class="cards-grid">
+                <!-- Card 1: Pajajaran (Aman) -->
+                <div class="sensor-card aman">
+                    <div class="card-top">
+                        <span class="card-badge aman">🟢 AMAN</span>
+                        <span class="card-time"><i class="bx bx-time"></i> 2 menit lalu</span>
+                    </div>
+                    <h3 class="card-location">Selokan Jl. Pajajaran</h3>
+                    <p class="card-sublocation">Depan SDN Pajajaran 1 — Kec. Bogor Timur</p>
+                    
+                    <div class="card-metrics-box">
+                        <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
+                        <div class="metric-number-display">
+                            <span class="metric-number">12</span>
+                            <span class="metric-unit">cm</span>
+                        </div>
+                        <div class="metric-desc">Normal (Batas Aman: 50 cm)</div>
+                        <div class="custom-progress">
+                            <div class="custom-progress-bar progress-safe" style="width: 24%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
+                        <span class="metric-row-value">Cerah / Rintik</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-trash"></i> Gorong-gorong</span>
+                        <span class="metric-row-value" style="color: var(--hijau-aman)">Lancar / Bersih</span>
+                    </div>
+                    
+                    <a href="pantau.html" class="card-footer-link">Lihat Grafik & Detail →</a>
+                </div>
+
+                <!-- Card 2: Sempur / Jl. Merdeka (Waspada) -->
+                <div class="sensor-card waspada">
+                    <div class="card-top">
+                        <span class="card-badge waspada">🟡 WASPADA</span>
+                        <span class="card-time"><i class="bx bx-time"></i> Baru saja</span>
+                    </div>
+                    <h3 class="card-location">Gorong-gorong Sempur</h3>
+                    <p class="card-sublocation">RT 03 / RW 07, Kel. Sempur — Kec. Bogor Tengah</p>
+                    
+                    <div class="card-metrics-box">
+                        <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
+                        <div class="metric-number-display">
+                            <span class="metric-number">38</span>
+                            <span class="metric-unit">cm</span>
+                        </div>
+                        <div class="metric-desc">Air Meningkat (Batas Bahaya: 60 cm)</div>
+                        <div class="custom-progress">
+                            <div class="custom-progress-bar progress-waspada" style="width: 63%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
+                        <span class="metric-row-value">Hujan Sedang</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-trash"></i> Gorong-gorong</span>
+                        <span class="metric-row-value" style="color: var(--kuning-waspada)">Ada Sampah Ringan</span>
+                    </div>
+                    
+                    <a href="pantau.html" class="card-footer-link">Lihat Grafik & Detail →</a>
+                </div>
+
+                <!-- Card 3: Jl. Merdeka (Bahaya) -->
+                <div class="sensor-card bahaya">
+                    <div class="card-top">
+                        <span class="card-badge bahaya">🔴 BAHAYA</span>
+                        <span class="card-time"><i class="bx bx-time"></i> 1 menit lalu</span>
+                    </div>
+                    <h3 class="card-location">Selokan Jl. Merdeka</h3>
+                    <p class="card-sublocation">Samping Pasar Mawar — Kec. Bogor Barat</p>
+                    
+                    <div class="card-metrics-box">
+                        <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
+                        <div class="metric-number-display">
+                            <span class="metric-number">72</span>
+                            <span class="metric-unit">cm</span>
+                        </div>
+                        <div class="metric-desc">Kritis / Air Meluap! (Batas: 60 cm)</div>
+                        <div class="custom-progress">
+                            <div class="custom-progress-bar progress-bahaya" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
+                        <span class="metric-row-value" style="color: var(--merah-bahaya)">Hujan Lebat</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label"><i class="bx bx-trash"></i> Gorong-gorong</span>
+                        <span class="metric-row-value" style="color: var(--merah-bahaya)">Tersumbat Sampah</span>
+                    </div>
+                    
+                    <a href="pantau.html" class="card-footer-link">Lihat Grafik & Detail →</a>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="pantau.html" class="btn btn-outline-emas"><i class="bx bx-grid-alt"></i> Pantau Seluruh 12 Titik</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Cara Kerja Section (3 Simple steps) -->
+    <section class="section section-putih">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Bagaimana SI DAGO Melindungi Anda?</h2>
+                <p class="section-desc">Tiga langkah sederhana yang terus bekerja 24 jam sehari untuk menjaga pemukiman warga tetap aman.</p>
+            </div>
+            
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-img-box">
+                        <i class="bx bx-broadcast" style="font-size: 5.5rem; color: var(--biru-bogor);"></i>
+                    </div>
+                    <h3 class="step-title">Sensor Memantau</h3>
+                    <p class="step-desc">Alat kecil cerdas diletakkan di dalam selokan untuk mendeteksi tinggi air, deras hujan, dan tumpukan sampah setiap 30 detik.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-img-box">
+                        <i class="bx bx-analyse" style="font-size: 5.5rem; color: var(--emas-bogor);"></i>
+                    </div>
+                    <h3 class="step-title">AI Menganalisis</h3>
+                    <p class="step-desc">Komputer pintar kami memproses data sensor dan memprediksi kemungkinan luapan air 20-30 menit sebelum banjir terjadi.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-img-box">
+                        <i class="bx bx-message-rounded-dots" style="font-size: 5.5rem; color: var(--biru-bogor);"></i>
+                    </div>
+                    <h3 class="step-title">Anda Tahu Lebih Awal</h3>
+                    <p class="step-desc">Jika terdeteksi potensi bahaya, HP Anda dan petugas kelurahan akan langsung mendapat peringatan otomatis via Telegram.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Telegram Ribbon Banner Section -->
+    <section class="telegram-ribbon">
+        <div class="mega-mendung-bg"></div>
+        <div class="telegram-container">
+            <div class="telegram-text">
+                <h2>🔔 Mau Dapat Peringatan Banjir di HP Anda?</h2>
+                <p>Gratis selamanya, langsung ke Telegram Anda. Tidak perlu mengunduh aplikasi tambahan apa pun yang memenuhi memori HP.</p>
+                <ul class="telegram-benefits">
+                    <li><i class="bx bx-check-circle"></i> Peringatan instan 20 - 30 menit sebelum selokan meluap</li>
+                    <li><i class="bx bx-check-circle"></i> Informasi spesifik untuk wilayah RT/RW Anda sendiri</li>
+                    <li><i class="bx bx-check-circle"></i> Sangat mudah digunakan oleh bapak-bapak dan ibu-ibu</li>
+                </ul>
+            </div>
+            
+            <div class="telegram-cta">
+                <div class="qr-box">
+                    <!-- QR Code Placeholder generated with beautiful CSS pattern representing a QR -->
+                    <i class="bx bx-qr-scan" style="font-size: 8rem; color: var(--biru-bogor)"></i>
+                </div>
+                <span>Scan dengan kamera HP Anda atau klik:</span>
+                <a href="notifikasi.html" class="btn btn-primary" style="width: 100%"><i class="bx bxl-telegram"></i> Hubungkan Telegram</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Footer Section -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col footer-about">
+                <a href="#" class="footer-logo">
+                    <i class="bx bx-water"></i>
+                    <h2>SI DAGO</h2>
+                </a>
+                <p>Sistem monitoring selokan pintar Kota Bogor untuk peringatan dini bencana banjir bandang lokal. Dirancang ramah lansia, kontras tinggi, dan mudah dimengerti.</p>
+                <p>Dikembangkan oleh Pelajar PPLG untuk kebaikan warga Bogor.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Tautan Cepat</h3>
+                <ul class="footer-links-list">
+                    <li><a href="index.html">Beranda Utama</a></li>
+                    <li><a href="pantau.html">Pantau Selokan Real-time</a></li>
+                    <li><a href="peta.html">Peta Titik Sensor</a></li>
+                    <li><a href="cara-kerja.html">Bagaimana Alat Bekerja</a></li>
+                    <li><a href="notifikasi.html">Daftar Peringatan Telegram</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Kontak & Info Resmi</h3>
+                <ul class="footer-contact-list">
+                    <li><i class="bx bx-envelope"></i> <span>support.sidago@bogorkota.go.id</span></li>
+                    <li><i class="bx bxl-telegram"></i> <span>Pusat Notifikasi: @SiDagoBogorBot</span></li>
+                    <li><i class="bx bx-map"></i> <span>Kota Bogor, Jawa Barat, Indonesia</span></li>
+                    <li><i class="bx bx-trophy"></i> <span>Finalis Smart City Competition 2026</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom-bar">
+            <p>Data sensor diperbarui otomatis setiap 30 detik | Versi Proyek 1.0.0 (2026) | Dibuat dengan ❤️ di Bogor untuk ketangguhan bencana kota.</p>
+        </div>
+    </footer>
+
+    <!-- App Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>

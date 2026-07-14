@@ -1,0 +1,15 @@
+{
+  "name": "sidago-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard for SI DAGO IoT Project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.0",
+    "socket.io": "^4.7.2"
+  }
+}

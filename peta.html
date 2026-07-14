@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Selokan Cerdas | SI DAGO Kota Bogor</title>
+    <meta name="description" content="Peta interaktif titik pemantauan selokan dan risiko luapan banjir di seluruh penjuru kota Bogor.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,300..900;1,300..900&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Leaflet.js CSS (Free Interactive Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom pulsing marker for Bahaya state */
+        .pulsing-marker-red {
+            background-color: var(--merah-bahaya);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(192, 39, 27, 0.7);
+            animation: pulse-marker-red-anim 1.5s infinite;
+            border: 3px solid white;
+        }
+        @keyframes pulse-marker-red-anim {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 39, 27, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(192, 39, 27, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 39, 27, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="brand">
+                <i class="bx bx-water"></i>
+                <div class="brand-text">
+                    <h1>SI DAGO</h1>
+                    <span>Pantau Selokan Bogor</span>
+                </div>
+            </a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Buka Menu">
+                <i class="bx bx-menu"></i>
+            </button>
+            <nav class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Beranda</a>
+                <a href="pantau.html" class="nav-link">Pantau Sekarang</a>
+                <a href="peta.html" class="nav-link active">Peta Selokan</a>
+                <a href="cara-kerja.html" class="nav-link">Cara Kerja</a>
+                <a href="notifikasi.html" class="nav-link">Daftar Telegram</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Map Interactive Layout -->
+    <main class="map-layout">
+        
+        <!-- Left Sidebar list of points -->
+        <aside class="map-sidebar">
+            <h2 class="map-title">Sebaran Titik Sensor</h2>
+            <p class="map-subtitle">Klik salah satu lokasi untuk fokus pada peta dan melihat data lengkapnya.</p>
+            
+            <div class="map-list-container" id="map-list-container">
+                <!-- Live Sensor Item (First Item) -->
+                <div class="map-list-item aman" id="live-map-item" onclick="focusMarker(0)">
+                    <div class="map-list-header">
+                        <span class="map-list-name">Selokan Pasar Mawar</span>
+                        <span class="map-list-badge aman" id="live-map-badge">🟢 AMAN</span>
+                    </div>
+                    <div class="map-list-metrics">
+                        <span><i class="bx bx-ruler"></i> Air: <strong id="live-map-water">0.0 cm</strong></span>
+                        <span><i class="bx bx-trash"></i> Gorong-gorong: <strong id="live-map-trash">Bersih</strong></span>
+                    </div>
+                </div>
+
+                <!-- Dummy Item 2: Sempur -->
+                <div class="map-list-item waspada" onclick="focusMarker(1)">
+                    <div class="map-list-header">
+                        <span class="map-list-name">Gorong-gorong Sempur</span>
+                        <span class="map-list-badge waspada">🟡 WASPADA</span>
+                    </div>
+                    <div class="map-list-metrics">
+                        <span><i class="bx bx-ruler"></i> Air: <strong>38.2 cm</strong></span>
+                        <span><i class="bx bx-trash"></i> Gorong-gorong: <strong>Ada Sampah</strong></span>
+                    </div>
+                </div>
+
+                <!-- Dummy Item 3: Pajajaran -->
+                <div class="map-list-item aman" onclick="focusMarker(2)">
+                    <div class="map-list-header">
+                        <span class="map-list-name">Selokan SDN Pajajaran 1</span>
+                        <span class="map-list-badge aman">🟢 AMAN</span>
+                    </div>
+                    <div class="map-list-metrics">
+                        <span><i class="bx bx-ruler"></i> Air: <strong>12.4 cm</strong></span>
+                        <span><i class="bx bx-trash"></i> Gorong-gorong: <strong>Bersih</strong></span>
+                    </div>
+                </div>
+
+                <!-- Dummy Item 4: Jl. Sudirman (Aman) -->
+                <div class="map-list-item aman" onclick="focusMarker(3)">
+                    <div class="map-list-header">
+                        <span class="map-list-name">Selokan depan Istana Bogor</span>
+                        <span class="map-list-badge aman">🟢 AMAN</span>
+                    </div>
+                    <div class="map-list-metrics">
+                        <span><i class="bx bx-ruler"></i> Air: <strong>8.1 cm</strong></span>
+                        <span><i class="bx bx-trash"></i> Gorong-gorong: <strong>Bersih</strong></span>
+                    </div>
+                </div>
+
+                <!-- Dummy Item 5: Tegal Lega (Waspada) -->
+                <div class="map-list-item waspada" onclick="focusMarker(4)">
+                    <div class="map-list-header">
+                        <span class="map-list-name">Gorong-gorong Tegal Lega</span>
+                        <span class="map-list-badge waspada">🟡 WASPADA</span>
+                    </div>
+                    <div class="map-list-metrics">
+                        <span><i class="bx bx-ruler"></i> Air: <strong>28.9 cm</strong></span>
+                        <span><i class="bx bx-trash"></i> Gorong-gorong: <strong>Ada Sampah</strong></span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Map Window Container -->
+        <section class="map-container">
+            <div id="map"></div>
+            
+            <!-- Map Legend (Bottom Right overlay) -->
+            <div class="map-legend">
+                <div class="legend-title">Indikator Bahaya</div>
+                <div class="legend-item">
+                    <span class="legend-color aman"></span>
+                    <span>🟢 Aman (Air &lt; 50%)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color waspada"></span>
+                    <span>🟡 Waspada (Air 50% - 80%)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color bahaya"></span>
+                    <span>🔴 Bahaya (Air &gt; 80% / Tersumbat)</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Leaflet.js Script library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Socket.IO library for live map update -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- General Script -->
+    <script src="js/app.js"></script>
+
+    <!-- Map Script -->
+    <script>
+        // 1. Initial coordinates set to central Bogor City
+        const bogorCoords = [-6.595, 106.795];
+        const map = L.map('map').setView(bogorCoords, 14);
+
+        // 2. Tile layer OpenStreetMap (Free & reliable)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // 3. Define 5 active Sensor Marker Coordinates
+        const sensorPoints = [
+            {
+                id: 0,
+                name: "Selokan Pasar Mawar",
+                sub: "Jl. Merdeka No. 12, Kec. Bogor Tengah",
+                lat: -6.59158,
+                lng: 106.7901,
+                status: "aman",
+                water: 0.0,
+                rain: "Cerah",
+                trash: "Bersih",
+                risk: 0
+            },
+            {
+                id: 1,
+                name: "Gorong-gorong Sempur",
+                sub: "RT 03 / RW 07, Kel. Sempur, Kec. Bogor Tengah",
+                lat: -6.5898,
+                lng: 106.7958,
+                status: "waspada",
+                water: 38.2,
+                rain: "Hujan Gerimis",
+                trash: "Ada Sampah",
+                risk: 58
+            },
+            {
+                id: 2,
+                name: "Selokan SDN Pajajaran 1",
+                sub: "Jl. Pajajaran, Kec. Bogor Timur",
+                lat: -6.6025,
+                lng: 106.8048,
+                status: "aman",
+                water: 12.4,
+                rain: "Berawan",
+                trash: "Bersih",
+                risk: 10
+            },
+            {
+                id: 3,
+                name: "Selokan depan Istana Bogor",
+                sub: "Jl. Ir. H. Juanda, Kec. Bogor Tengah",
+                lat: -6.5944,
+                lng: 106.7972,
+                status: "aman",
+                water: 8.1,
+                rain: "Cerah",
+                trash: "Bersih",
+                risk: 5
+            },
+            {
+                id: 4,
+                name: "Gorong-gorong Tegal Lega",
+                sub: "Kel. Tegallega, Kec. Bogor Utara",
+                lat: -6.5982,
+                lng: 106.8122,
+                status: "waspada",
+                water: 28.9,
+                rain: "Hujan Gerimis",
+                trash: "Ada Sampah",
+                risk: 42
+            }
+        ];
+
+        // 4. Marker Objects storage
+        const markerObjects = [];
+
+        // 5. Build marker layout helper
+        function createCustomIcon(status) {
+            let color = "var(--hijau-aman)";
+            let className = "";
+            if (status === "waspada") {
+                color = "var(--kuning-waspada)";
+            } else if (status === "bahaya") {
+                color = "var(--merah-bahaya)";
+                return L.divIcon({
+                    className: 'pulsing-marker-red',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+            }
+
+            return L.divIcon({
+                html: `<div style="background-color: ${color}; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3)"></div>`,
+                className: '',
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
+        }
+
+        // 6. Draw markers on Map
+        sensorPoints.forEach((point) => {
+            const marker = L.marker([point.lat, point.lng], { icon: createCustomIcon(point.status) }).addTo(map);
+            
+            // Set beautiful popup template
+            const popupHTML = `
+                <div class="map-popup">
+                    <div class="map-popup-header">
+                        <span class="map-popup-badge ${point.status}" id="popup-badge-${point.id}">${point.status.toUpperCase()}</span>
+                        <span style="font-size: 0.75rem; color: #777; font-weight:700;"><i class='bx bx-broadcast'></i> Sensor #${point.id}</span>
+                    </div>
+                    <div class="map-popup-title">${point.name}</div>
+                    <div class="map-popup-text">${point.sub}</div>
+                    <div style="font-size: 0.85rem; line-height: 1.4; color: var(--abu-teks); font-weight:700;">
+                        💧 Air: <span id="popup-water-${point.id}">${point.water} cm</span><br>
+                        🌧️ Hujan: <span id="popup-rain-${point.id}">${point.rain}</span><br>
+                        🗑️ Sampah: <span id="popup-trash-${point.id}">${point.trash}</span>
+                    </div>
+                    <div style="text-align: center; margin-top: 0.75rem;">
+                        <a href="pantau.html" style="font-size: 0.8rem; font-weight: 800; color: var(--biru-bogor); text-decoration: none;">Lihat Panel Detil →</a>
+                    </div>
+                </div>
+            `;
+            
+            marker.bindPopup(popupHTML);
+            markerObjects.push({ id: point.id, marker: marker });
+        });
+
+        // 7. Focus Marker from Sidebar List
+        function focusMarker(id) {
+            const found = markerObjects.find(m => m.id === id);
+            const foundData = sensorPoints.find(p => p.id === id);
+            if (found && foundData) {
+                map.setView([foundData.lat, foundData.lng], 16);
+                found.marker.openPopup();
+            }
+        }
+
+        // ============================================================
+        // LIVE WEBSOCKET UPDATE IN PETA
+        // ============================================================
+        const socket = io();
+
+        socket.on('sensor_update', (data) => {
+            const height = data.tinggiAir;
+            const rain = data.kondisiHujan;
+            const trash = data.adaSampah;
+            
+            // Determine live state
+            // Jl. Merdeka Max Height = 20cm
+            let state = "aman";
+            let stateText = "🟢 AMAN";
+            let trashText = "Lancar / Bersih";
+            
+            if (height >= 16.0 || (trash && height >= 10.0)) {
+                state = "bahaya";
+                stateText = "🔴 BAHAYA";
+            } else if (height >= 10.0 || trash) {
+                state = "waspada";
+                stateText = "🟡 WASPADA";
+            }
+            
+            if (trash) {
+                trashText = "Tersumbat Sampah!";
+            }
+
+            // Update Left Sidebar Item
+            const liveMapItem = document.getElementById('live-map-item');
+            const liveMapBadge = document.getElementById('live-map-badge');
+            const liveMapWater = document.getElementById('live-map-water');
+            const liveMapTrash = document.getElementById('live-map-trash');
+
+            if (liveMapItem && liveMapBadge && liveMapWater && liveMapTrash) {
+                // Update Badge
+                liveMapBadge.className = `map-list-badge ${state}`;
+                liveMapBadge.innerText = stateText;
+                
+                // Update list border class
+                liveMapItem.className = `map-list-item ${state}`;
+                
+                // Update metric text
+                liveMapWater.innerText = `${height.toFixed(1)} cm`;
+                liveMapTrash.innerText = trashText;
+                if (trash) {
+                    liveMapTrash.style.color = "var(--merah-bahaya)";
+                } else {
+                    liveMapTrash.style.color = "var(--hijau-aman)";
+                }
+            }
+
+            // Update Marker Popup elements if currently rendered in DOM
+            const popupBadge = document.getElementById(`popup-badge-0`);
+            const popupWater = document.getElementById(`popup-water-0`);
+            const popupRain = document.getElementById(`popup-rain-0`);
+            const popupTrash = document.getElementById(`popup-trash-0`);
+
+            if (popupBadge) {
+                popupBadge.className = `map-popup-badge ${state}`;
+                popupBadge.innerText = state.toUpperCase();
+            }
+            if (popupWater) popupWater.innerText = `${height.toFixed(1)} cm`;
+            if (popupRain) popupRain.innerText = rain;
+            if (popupTrash) {
+                popupTrash.innerText = trashText;
+                if (trash) {
+                    popupTrash.style.color = "var(--merah-bahaya)";
+                } else {
+                    popupTrash.style.color = "var(--hijau-aman)";
+                }
+            }
+
+            // Update Leaflet Marker Icon Dynamically!
+            const liveMarker = markerObjects.find(m => m.id === 0);
+            if (liveMarker) {
+                liveMarker.marker.setIcon(createCustomIcon(state));
+            }
+
+            // Also update coordinates cache in memory
+            sensorPoints[0].status = state;
+            sensorPoints[0].water = height.toFixed(1);
+            sensorPoints[0].rain = rain;
+            sensorPoints[0].trash = trashText;
+        });
+
+    </script>
+</body>
+</html>
