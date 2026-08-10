@@ -92,6 +92,7 @@ _Pesan otomatis dari Server SI DAGO Kota Bogor • ${new Date().toLocaleTimeStri
 // ============================================================
 let lastNotifStatus   = "aman";
 let lastNotifSentTime = 0;
+let isFirstDataReceived = false;
 const NOTIF_COOLDOWN  = 5 * 60 * 1000; // 5 menit cooldown antar notifikasi
 // Skor Risiko 0 - 100 sesuai Proposal BIA 2026 (Gambar 2.1 Flowchart):
 // 0 - 44   : AMAN
@@ -168,6 +169,20 @@ app.post('/api/data', (req, res) => {
     // Broadcast ke semua dashboard yang terbuka via WebSocket
     io.emit('sensor_update', currentData);
     console.log(`✅ Data diproses & disiarkan: Air=${parsedTinggi}cm | Hujan=${parsedHujan} | Sampah=${parsedSampah}`);
+
+    // Notifikasi khusus saat Alat ESP32 PERTAMA KALI NYALA & terhubung
+    if (!isFirstDataReceived) {
+        isFirstDataReceived = true;
+        const pesanNyala = `🟢 *[SI DAGO] PERANGKAT SENSOR AKTIF*
+
+📍 *Lokasi:* Selokan Pasar Mawar (Jl. Merdeka)
+📡 *Status:* Perangkat ESP32 berhasil terhubung & mulai mengirim data realtime.
+💧 *Pembacaan Awal:* ${parsedTinggi.toFixed(1)} cm | Hujan: ${parsedHujan}
+
+_Sistem pemantauan 24 jam SI DAGO Kota Bogor aktif._`;
+        console.log("📲 Mengirim notifikasi perangkat aktif ke Telegram...");
+        kirimTelegram(pesanNyala);
+    }
 
     // Evaluasi status & kirim notifikasi Telegram jika perlu
     const currentStatus = getStatus(parsedTinggi, parsedSampah, parsedHujan);
