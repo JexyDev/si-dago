@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI DAGO | Presentasi Deck Bogor Innovation Awards 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --primary-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --status-green: #22c55e;
+            --status-yellow: #f59e0b;
+            --status-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Progress & Status Header */
+        .header {
+            padding: 1rem 2rem;
+            background-color: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+        }
+
+        .brand-pill img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .slide-counter {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        /* Slide Container & Slide Elements */
+        .deck-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 140px);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease-in-out;
+            transform: translateX(50px);
+            padding: 2.5rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        /* Typography Inside Slides */
+        .slide-tag {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .slide-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 900px;
+            line-height: 1.6;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        /* Card Elements */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .card-body {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Code Block Snippet */
+        .code-box {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        /* Speaker Script Panel Bottom */
+        .speaker-notes-panel {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 0.85rem 2rem;
+            font-size: 0.88rem;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .speaker-notes-panel i {
+            font-size: 1.2rem;
+        }
+
+        /* Bottom Controls Bar */
+        .nav-controls {
+            padding: 0.75rem 2rem;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-nav {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: #ffffff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav:hover {
+            background-color: var(--primary-blue);
+            color: #000;
+            border-color: var(--primary-blue);
+        }
+
+        /* Status Pills */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-green { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+        .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body>
+
+    <!-- Header Bar -->
+    <header class="header">
+        <div class="brand-pill">
+            <img src="/img/logo-icon.svg" alt="SI DAGO">
+            <span>SI DAGO</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;">| Presentasi BIA 2026</span>
+        </div>
+        <div class="slide-counter" id="slide-counter">Slide 1 / 22</div>
+    </header>
+
+    <!-- Slide Deck Body -->
+    <div class="deck-container">
+
+        <!-- SLIDE 1: Title -->
+        <div class="slide active" data-note="Buka presentasi dengan menyapa juri BIA 2026. Tekankan SI DAGO sebagai solusi mitigasi banjir lokal Bogor hasil karya pelajar SMK Wikrama Bogor.">
+            <span class="slide-tag">🏆 BOGOR INNOVATION AWARDS 2026 • SMK WIKRAMA BOGOR</span>
+            <h1 class="slide-title" style="font-size: 3.2rem; max-width: 1000px;">SI DAGO: Sistem Cerdas Pemantauan Drainase & Peringatan Dini Banjir Kota Bogor</h1>
+            <p class="slide-subtitle">Integrasi Real-time IoT ESP32, Multi-Factor Scoring Algorithm, Node.js WebSocket Engine, dan Push Notification Telegram Instant 24 Jam.</p>
+            <div class="grid-3" style="max-width: 900px; margin-top: 1rem;">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-chip"></i></div><div class="card-title">IoT Edge Sensing</div></div>
+                    <div class="card-body">3 Sensor Terintegrasi: Air HC-SR04, Hujan YL-83, Sampah FC-51.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-radar"></i></div><div class="card-title">Realtime Sync</div></div>
+                    <div class="card-body">Server Node.js Express + WebSocket Socket.IO tanpa refresh.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bxl-telegram"></i></div><div class="card-title">Telegram Alert</div></div>
+                    <div class="card-body">Direct Bot API push notification dengan filter anti-spam 30 detik.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Background Problem -->
+        <div class="slide" data-note="Jelaskan karakteristik geografis Kota Bogor (Kota Hujan). Fokus pada masalah luapan selokan lokal dan penyumbatan sampah yang tak terdeteksi.">
+            <span class="slide-tag">LATAR BELAKANG & PERMASALAHAN</span>
+            <h2 class="slide-title">Ancaman Banjir Lokal & Genangan Gorong-gorong Kota Bogor</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon" style="color:var(--status-red); background:rgba(239,68,68,0.1);"><i class="bx bx-error-circle"></i></div><div class="card-title">Masalah Utama di Lapangan</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left: 1.2rem; line-height: 1.8;">
+                            <li><strong>Curah Hujan Tinggi:</strong> Topografi Kota Bogor memicu genangan air mendadak dalam kurun waktu 15–30 menit.</li>
+                            <li><strong>Penyumbatan Sampah:</strong> Gorong-gorong tersumbat sampah plastik/ranting tanpa diketahui warga sekitar.</li>
+                            <li><strong>Sistem Monitoring Mahal:</strong> Stasiun hidrologi komersial berharga puluhan juta rupiah, sulit dijangkau level RT/RW.</li>
+                            <li><strong>Keterlambatan Peringatan:</strong> Informasi banjir sering terlambat sampai ke warga terdampak.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon" style="color:var(--status-green); background:rgba(34,197,94,0.1);"><i class="bx bx-check-shield"></i></div><div class="card-title">Solusi SI DAGO</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left: 1.2rem; line-height: 1.8;">
+                            <li><strong>Swadaya & Terjangkau:</strong> Perangkat IoT hemat biaya (BOM Rp 349.000) untuk tingkat RT/RW.</li>
+                            <li><strong>Early Warning System:</strong> Deteksi kombinasi air + hujan + sampah secara presisi.</li>
+                            <li><strong>Inklusif via Telegram:</strong> Warga tidak perlu install aplikasi baru, cukup terima notifikasi Telegram.</li>
+                            <li><strong>Transparansi Data:</strong> Dashboard publik interaktif untuk melihat peta & laporan histori.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: System Architecture Overview -->
+        <div class="slide" data-note="Jelaskan alur besar end-to-end SI DAGO dari sensor di lapangan hingga ke HP warga secara sinkron.">
+            <span class="slide-tag">ARSITEKTUR GLOBAL E2E</span>
+            <h2 class="slide-title">Alur Data End-to-End SI DAGO (Hardware to Citizen)</h2>
+            <div class="grid-4">
+                <div class="card">
+                    <span class="badge badge-green">Langkah 1</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">ESP32 IoT Node</h3>
+                    <p class="card-body" style="font-size:0.85rem;">Membaca 3 sensor setiap 2 detik. Mengaplikasikan filter debounce anomaly di sisi edge.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-yellow">Langkah 2</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">REST API Ingestion</h3>
+                    <p class="card-body" style="font-size:0.85rem;">HTTP POST Payload JSON dikirim via WiFi ke endpoint Express <code>/api/data</code>.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-yellow">Langkah 3</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">Engine & Scoring</h3>
+                    <p class="card-body" style="font-size:0.85rem;">Server menghitung Skor Risiko (0-100) & mengevaluasi kriteria Bahaya 30 detik.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-red">Langkah 4</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">Broadcast & Push</h3>
+                    <p class="card-body" style="font-size:0.85rem;">Socket.IO menyiarkan UI live. Telegram Bot API mengirim notifikasi darurat.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Hardware Microcontroller ESP32 -->
+        <div class="slide" data-note="Detail teknis mikrokontroler ESP32 yang dipilih karena memiliki WiFi terintegrasi & performa tinggi.">
+            <span class="slide-tag">HARDWARE LAYER (1/3)</span>
+            <h2 class="slide-title">Mikrokontroler ESP32: Otak Utama Edge Device</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-microchip"></i></div><div class="card-title">Spesifikasi Utama ESP32</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left:1.2rem; line-height:1.8;">
+                            <li><strong>Processor:</strong> Dual-Core 32-bit LX6 Microprocessor (240 MHz).</li>
+                            <li><strong>Wireless:</strong> Built-in WiFi 802.11 b/g/n & Bluetooth 4.2 BLE.</li>
+                            <li><strong>Memory:</strong> 520 KB SRAM, Flash External 4MB.</li>
+                            <li><strong>Low Power:</strong> Konsumsi daya efisien (mendukung modul Solar Cell/Baterai).</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-plug"></i></div><div class="card-title">Pinout & Wiring Diagram</div></div>
+                    <div class="card-body">
+                        <div class="code-box">
+Trigger (Ultrasonik) -> GPIO 5
+Echo (Ultrasonik)    -> GPIO 18
+Rain Sensor Analog   -> GPIO 34 (ADC1_CH6)
+IR Trash Sensor      -> GPIO 19
+Status LED / Buzzer  -> GPIO 2, GPIO 4
+Power Supply         -> 5V Micro USB / VIN
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Hardware Sensors Breakdown -->
+        <div class="slide" data-note="Paparkan 3 jenis sensor yang digunakan dan fungsinya masing-masing dalam mendeteksi ancaman banjir.">
+            <span class="slide-tag">HARDWARE LAYER (2/3)</span>
+            <h2 class="slide-title">Trisensor Detection System</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-water"></i></div><div class="card-title">HC-SR04 Ultrasonik</div></div>
+                    <div class="card-body">
+                        <strong>Fungsi:</strong> Mengukur ketinggian air selokan (0–20 cm) dengan menghitung waktu pantulan gelombang suara 40kHz.<br><br>
+                        <strong>Akurasi:</strong> Resolusi hingga 0.3 cm.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-cloud-rain"></i></div><div class="card-title">YL-83 Rain Sensor</div></div>
+                    <div class="card-body">
+                        <strong>Fungsi:</strong> Mendeteksi intensitas air hujan di area sekitar selokan via papan konduktif pcb & komparator LM393.<br><br>
+                        <strong>Kategori:</strong> Cerah, Gerimis, Hujan Lebat.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-trash"></i></div><div class="card-title">FC-51 Infrared Obstacle</div></div>
+                    <div class="card-body">
+                        <strong>Fungsi:</strong> Mendeteksi adanya tumpukan sampah / daun penyumbat di mulut gorong-gorong drainase.<br><br>
+                        <strong>Output:</strong> Digital (HIGH/LOW tersumbat).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: ESP32 Edge Logic & Debouncing -->
+        <div class="slide" data-note="Jelaskan bagaimana kode ESP32 memfilter noise atau lonjakan palsu air akibat percikan/sampah lewat.">
+            <span class="slide-tag">HARDWARE LAYER (3/3)</span>
+            <h2 class="slide-title">Filter Anomaly & Debounce Sisi ESP32</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-filter-alt"></i></div><div class="card-title">Masalah Anomaly Sensor</div></div>
+                    <div class="card-body">
+                        Percikan air mendadak, objek daun melintas, atau interferensi listrik dapat memicu pembacaan ekstrem yang salah (spikes). Tanpa filtering, sistem akan memicu alarm palsu (false alarm).
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-code-alt"></i></div><div class="card-title">Algoritma Debounce ESP32 (C++)</div></div>
+                    <div class="card-body">
+                        <div class="code-box">
+// Sampling 5x pembacaan ultrasonik, hilangkan nilai ekstrem
+float sum = 0; int validSamples = 0;
+for(int i=0; i<5; i++){
+   float read = readUltrasonic();
+   if(read >= 0 && read <= 100) { sum += read; validSamples++; }
+   delay(20);
+}
+float airBersih = (validSamples > 0) ? (sum / validSamples) : lastValid;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Connectivity & JSON Payload Schema -->
+        <div class="slide" data-note="Tunjukkan skema JSON data yang dikirimkan ESP32 ke REST API server.">
+            <span class="slide-tag">DATA PROTOCOL LAYER</span>
+            <h2 class="slide-title">Konektivitas HTTP POST & Skema Data JSON</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-wifi"></i></div><div class="card-title">Metode Komunikasi HTTP POST</div></div>
+                    <div class="card-body">
+                        ESP32 terhubung ke jaringan local/cloud WiFi, mengirimkan payload JSON setiap 2–5 detik ke endpoint backend: <code>http://[SERVER_IP]:3000/api/data</code>.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-json"></i></div><div class="card-title">Payload JSON Schema</div></div>
+                    <div class="card-body">
+                        <div class="code-box">
+{
+  "tinggiAir": 12.5,        // float (cm)
+  "kondisiHujan": "Gerimis",// string
+  "adaSampah": true,        // boolean
+  "daerah": "Bogor Timur",  // string (opsional)
+  "lokasi": "SMK Wikrama"   // string (opsional)
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Backend Server Architecture Node.js -->
+        <div class="slide" data-note="Jelaskan teknologi server backend Node.js Express yang menangani API dan websocket.">
+            <span class="slide-tag">BACKEND LAYER (1/3)</span>
+            <h2 class="slide-title">Node.js Express Server: Core Processing Unit</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bxl-nodejs"></i></div><div class="card-title">Non-Blocking I/O</div></div>
+                    <div class="card-body">Menangani ratusan koneksi sensor & ribuan request user secara efisien dan cepat tanpa lag.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-server"></i></div><div class="card-title">Auto Port Fallback</div></div>
+                    <div class="card-body">Server otomatis mendeteksi konflik port (EADDRINUSE) dan berpindah port secara cerdas (3000 -> 3001).</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-file"></i></div><div class="card-title">Static & API Hosting</div></div>
+                    <div class="card-body">Menyajikan file frontend web statis sekaligus melayani API endpoint <code>/api/reports</code> & <code>/api/data</code>.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Multi-Factor Risk Score Algorithm -->
+        <div class="slide" data-note="Jelaskan rumus akumulasi skor risiko 0-100 yang sesuai dengan Proposal BIA 2026.">
+            <span class="slide-tag">BACKEND LAYER (2/3)</span>
+            <h2 class="slide-title">Algoritma Skor Risiko Multi-Faktor (0–100)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-calculator"></i></div><div class="card-title">Rumus Akumulasi Poin Risiko</div></div>
+                    <div class="card-body">
+                        <div class="code-box">
+Skor = Math.round((tinggiAir / 20.0) * 70) 
+       + (adaSampah ? 20 : 0) 
+       + (kondisiHujan != 'Cerah' ? 10 : 0);
+
+Skor Akhir = Math.min(Math.max(Skor, 0), 100);
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-category-alt"></i></div><div class="card-title">Klasifikasi Status Bencana</div></div>
+                    <div class="card-body">
+                        <ul style="line-height:2.2; list-style:none;">
+                            <li><span class="badge badge-green">0 – 44 : AMAN</span> Kondisi selokan normal & lancar.</li>
+                            <li><span class="badge badge-yellow">45 – 75 : WASPADA</span> Mulai ada genangan / hujan deras / sampah.</li>
+                            <li><span class="badge badge-red">76 – 100 : BAHAYA</span> Air meluap tinggi & berpotensi banjir lokal!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Anti-Spam & 30-Second Verification Logic -->
+        <div class="slide" data-note="Inilah poin sangat penting: logika persistensi 30 detik untuk mencegah Telegram terganggu spam.">
+            <span class="slide-tag">BACKEND LAYER (3/3)</span>
+            <h2 class="slide-title">Logika Persistensi 30 Detik & Anti-Spam Telegram</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon" style="color:var(--accent-gold); background:rgba(251,191,36,0.1);"><i class="bx bx-time-five"></i></div><div class="card-title">Syarat Verifikasi 30 Detik BAHAYA</div></div>
+                    <div class="card-body">
+                        Peringatan <strong>BAHAYA</strong> HANYA dikirim jika status BAHAYA bertahan berturut-turut selama <strong>15 sampel data (30 detik)</strong>.<br><br>
+                        Jika di detik ke-10 status turun kembali ke aman, counter di-reset ke 0. Ini menjamin 100% bebas alarm palsu.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-shield-quarter"></i></div><div class="card-title">Cooldown Notifikasi 5 Menit</div></div>
+                    <div class="card-body">
+                        Setelah notifikasi Telegram terkirim, sistem memberlakukan <strong>Cooldown 5 Menit</strong> sebelum bisa mengirim notifikasi berikutnya (kecuali jika status berubah drastis menjadi lebih parah).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Realtime Engine Socket.IO -->
+        <div class="slide" data-note="Jelaskan bagaimana Socket.IO membuat dashboard terupdate otomatis tanpa refresh.">
+            <span class="slide-tag">REALTIME LAYER</span>
+            <h2 class="slide-title">Socket.IO WebSocket: Sinkronisasi Live Tanpa Refresh</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-refresh"></i></div><div class="card-title">Zero Reloading</div></div>
+                    <div class="card-body">Data dari sensor diterima server -> langsung di-broadcast via event <code>sensor_update</code> ke seluruh browser yang terbuka.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-line-chart"></i></div><div class="card-title">Chart Live Re-render</div></div>
+                    <div class="card-body">Grafik Chart.js di <code>pantau.html</code> menambah titik data baru secara real-time & mulus.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-signal-5"></i></div><div class="card-title">Auto Reconnect</div></div>
+                    <div class="card-body">Jika koneksi terputus, browser otomatis mencoba reconnect ke server dengan indikator status visual.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Telegram Emergency Dispatcher -->
+        <div class="slide" data-note="Jelaskan integrasi Telegram Bot API yang mengirim pesan instan ke HP warga.">
+            <span class="slide-tag">NOTIFICATION LAYER</span>
+            <h2 class="slide-title">Telegram Bot API: Peringatan Dini Instan di Handphone Warga</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon" style="color:#38bdf8;"><i class="bx bxl-telegram"></i></div><div class="card-title">Mengapa Menggunakan Telegram?</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left:1.2rem; line-height:1.8;">
+                            <li>Ringan, gratis, & ramah di semua merk HP (Android & iOS).</li>
+                            <li>Tingkat pembacaan pesan (open rate) mendekati 100%.</li>
+                            <li>Warga tidak repot mengunduh aplikasi khusus yang memenuhi memori HP.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-message-square-detail"></i></div><div class="card-title">Format Pesan Darurat Telegram</div></div>
+                    <div class="card-body">
+                        <div class="code-box" style="color:#ffffff;">
+🔴 *[SI DAGO] PERINGATAN BAHAYA*
+📍 *Lokasi:* Drainase Utama SMK Wikrama
+💧 *Ketinggian Air:* 18.5 cm
+🌧️ *Kondisi Hujan:* Hujan Lebat
+🗑️ *Gorong-gorong:* Tersumbat Sampah!
+
+🚨 Segera amankan barang berharga & evakuasi!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Web UX Design System -->
+        <div class="slide" data-note="Bahas desain UI/UX website SI DAGO yang dibuat dengan standar tinggi, ramah lansia, dan kontras tinggi.">
+            <span class="slide-tag">FRONTEND UX LAYER</span>
+            <h2 class="slide-title">Desain UI/UX Web SI DAGO: Kontras Tinggi & Accessibility</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-palette"></i></div><div class="card-title">Color Palette Bogor</div></div>
+                    <div class="card-body">Menggabungkan Biru Navy Bogor (#0F2937), Emas (#D97706), Krem Latar (#F8FAFC), dan Indikator Status Kontras Tinggi.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-font"></i></div><div class="card-title">Modern Typography</div></div>
+                    <div class="card-body">Font Outfit (Heading), Plus Jakarta Sans (Body), dan Oswald/Fira Code (Angka & Kode).</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-mobile-alt"></i></div><div class="card-title">Responsive & Accessible</div></div>
+                    <div class="card-body">Navigasi mobile-friendly, ukuran tombol besar, dan ramah dibaca oleh warga lansia.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Page Breakdown 1 - Index.html -->
+        <div class="slide" data-note="Jelaskan halaman utama Beranda (index.html).">
+            <span class="slide-tag">WEB PAGE BREAKDOWN (1/5)</span>
+            <h2 class="slide-title">Halaman Beranda Utama (<code>index.html</code>)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-home"></i></div><div class="card-title">Fitur & Komponen Utama</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left:1.2rem; line-height:1.8;">
+                            <li><strong>Top Status Bar:</strong> Menampilkan status selokan Kota Bogor secara live di bagian paling atas.</li>
+                            <li><strong>Hero Section:</strong> Title BIA 2026, status badge live, & tombol Call-To-Action (CTA).</li>
+                            <li><strong>Live Sensor Metrics Bar:</strong> 4 kartu ringkas (Tinggi Air, Hujan, Sampah, WebSocket Server).</li>
+                            <li><strong>3 Key Feature Cards:</strong> Keunggulan sensor presisi, notifikasi Telegram, & biaya swadaya.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-target-lock"></i></div><div class="card-title">Tujuan Halaman</div></div>
+                    <div class="card-body">
+                        Memberikan gambaran umum seketika kepada pengunjung web mengenai status keamanan selokan Bogor saat ini tanpa harus menavigasi ke menu lain.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Page Breakdown 2 - Pantau.html -->
+        <div class="slide" data-note="Jelaskan halaman Pantau Sekarang (pantau.html) yang memiliki grafik live Chart.js.">
+            <span class="slide-tag">WEB PAGE BREAKDOWN (2/5)</span>
+            <h2 class="slide-title">Dashboard Live Monitor (<code>pantau.html</code>)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-line-chart"></i></div><div class="card-title">Grafik Realtime Chart.js</div></div>
+                    <div class="card-body">
+                        Menampilkan grafik garis ketinggian air yang bergeser secara live. Dilengkapi <strong>Annotation Line</strong> batas ambang batas WASPADA (10 cm) dan BAHAYA (15 cm).
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-slider-alt"></i></div><div class="card-title">Indikator Parameter & Kontrol Simulasi</div></div>
+                    <div class="card-body">
+                        Menampilkan gauge digital tinggi air, status sensor hujan YL-83, infrared sampah FC-51, serta panel simulasi tes data untuk keperluan demonstrasi pengujian.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Page Breakdown 3 - Peta.html -->
+        <div class="slide" data-note="Jelaskan halaman Peta Selokan (peta.html) dengan Leaflet.js GIS.">
+            <span class="slide-tag">WEB PAGE BREAKDOWN (3/5)</span>
+            <h2 class="slide-title">Peta GIS Interaktif Selokan Bogor (<code>peta.html</code>)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-map-alt"></i></div><div class="card-title">Fitur GIS Leaflet.js</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left:1.2rem; line-height:1.8;">
+                            <li>Peta geografis Kota Bogor dengan koordinat presisi titik sensor (misal: Drainase SMK Wikrama).</li>
+                            <li>Marker kustom beranimasi pulse sesuai status (Hijau = Aman, Kuning = Waspada, Merah = Bahaya).</li>
+                            <li>Popup informasi detail pembacaan air saat marker diklik.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-layer"></i></div><div class="card-title">Distribusi Regional</div></div>
+                    <div class="card-body">
+                        Memetakan 6 Kecamatan Kota Bogor (Bogor Timur, Selatan, Tengah, Utara, Barat, Tanah Sareal) untuk pemantauan terpadu.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: Page Breakdown 4 - Laporan.html -->
+        <div class="slide" data-note="Jelaskan halaman Laporan Data (laporan.html) dengan tabel interaktif dan export data.">
+            <span class="slide-tag">WEB PAGE BREAKDOWN (4/5)</span>
+            <h2 class="slide-title">Laporan & Telemetri Historis (<code>laporan.html</code>)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-table"></i></div><div class="card-title">Tabel Interaktif & Filtering</div></div>
+                    <div class="card-body">
+                        <ul style="padding-left:1.2rem; line-height:1.8;">
+                            <li>Filter periode waktu: Harian (24j), Mingguan (7h), Bulanan (30h), Tahunan (365h).</li>
+                            <li>Filter Wilayah Kecamatan & Filter Status Bencana.</li>
+                            <li>Pencarian teks instan (Search query) & ringkasan statistik (Average, Max, Total Record).</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-export"></i></div><div class="card-title">Fitur Ekspor Multi-Format</div></div>
+                    <div class="card-body">
+                        Memungkinkan petugas kelurahan atau dinas terkait mengunduh data laporan dalam format <strong>CSV, Excel (XLSX), atau dokumen PDF</strong> untuk analisis lanjutan.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: Page Breakdown 5 - Notifikasi, Cara Kerja, Tentang -->
+        <div class="slide" data-note="Jelaskan halaman Notifikasi Telegram, Cara Kerja, dan Tentang Kami.">
+            <span class="slide-tag">WEB PAGE BREAKDOWN (5/5)</span>
+            <h2 class="slide-title">Halaman Pendukung & Edukasi Warga</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bxl-telegram"></i></div><div class="card-title"><code>notifikasi.html</code></div></div>
+                    <div class="card-body">Panduan mudah 3 langkah bagi warga untuk menghubungkan akun Telegram ke Telegram Bot SI DAGO & tombol tes notifikasi.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-cog"></i></div><div class="card-title"><code>cara-kerja.html</code></div></div>
+                    <div class="card-body">Penjelasan prinsip kerja fisik sensor, pengolahan server, dan algoritma air dalam bahasa awam yang ramah warga.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-group"></i></div><div class="card-title"><code>tentang.html</code></div></div>
+                    <div class="card-body">Profil tim pengembang pelajar PPLG SMK Wikrama Bogor & visi misi kontribusi Smart City Kota Bogor.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: Cost Analysis & Hardware Bill of Materials -->
+        <div class="slide" data-note="Tunjukkan rincian komponen hemat biaya Rp 349.000 untuk pembuktian keanggotaan swadaya RT/RW.">
+            <span class="slide-tag">COST & FEASIBILITY LAYER</span>
+            <h2 class="slide-title">Rincian Biaya Perangkat IoT (Bill of Materials)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon" style="color:var(--status-green); background:rgba(34,197,94,0.1);"><i class="bx bx-money"></i></div><div class="card-title">Tabel Biaya Hardware (Total Rp 349.000)</div></div>
+                    <div class="card-body">
+                        <table style="width:100%; font-size:0.85rem; border-collapse:collapse;" border="1" borderColor="#334155" cellpadding="6">
+                            <tr style="background:#090d16;"><th>Komponen</th><th>Fungsi</th><th>Estimasi Biaya</th></tr>
+                            <tr><td>ESP32 Development Board</td><td>Mikrokontroler + WiFi</td><td>Rp 75.000</td></tr>
+                            <tr><td>HC-SR04 Ultrasonik</td><td>Sensor Ketinggian Air</td><td>Rp 25.000</td></tr>
+                            <tr><td>YL-83 Rain Sensor Module</td><td>Sensor Intensitas Hujan</td><td>Rp 20.000</td></tr>
+                            <tr><td>FC-51 Infrared Module</td><td>Sensor Sampah Gorong-gorong</td><td>Rp 15.000</td></tr>
+                            <tr><td>Box Panel Waterproof & Kabel</td><td>Proteksi Outdoor & Wiring</td><td>Rp 114.000</td></tr>
+                            <tr><td>Power Supply Adapter 5V/2A</td><td>Catu Daya Listrik</td><td>Rp 100.000</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-trending-up"></i></div><div class="card-title">Skalabilitas & Economic Viability</div></div>
+                    <div class="card-body">
+                        Dengan biaya kurang dari <strong>Rp 350.000 per unit</strong>, sistem SI DAGO sangat terjangkau untuk didanai via dana kas RT/RW, Alokasi Dana Kelurahan, atau program Tanggung Jawab Sosial Perusahaan (CSR).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 20: Social Impact & Smart City Alignment -->
+        <div class="slide" data-note="Hubungkan SI DAGO dengan visi Smart City Kota Bogor dan pemberdayaan masyarakat.">
+            <span class="slide-tag">IMPACT LAYER</span>
+            <h2 class="slide-title">Dampak Sosial & Dukungan Bogor Smart City</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-shield"></i></div><div class="card-title">Mitigasi Risiko Bencana</div></div>
+                    <div class="card-body">Mengurangi potensi kerugian material kerusakkan rumah & barang akibat genangan air yang lambat ditangani.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-heart"></i></div><div class="card-title">Kesadaran Kebersihan</div></div>
+                    <div class="card-body">Deteksi sampah gorong-gorong memicu aksi gotong royong warga untuk pembersihan berkala.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-icon"><i class="bx bx-city"></i></div><div class="card-title">Integrasi Smart City</div></div>
+                    <div class="card-body">Menyediakan data feed API terbuka yang dapat diintegrasikan dengan portal BPBD / Pemkot Bogor.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 21: Live Demo Playbook -->
+        <div class="slide" data-note="Panduan langkah demi langkah saat melakukan live demo di hadapan juri.">
+            <span class="slide-tag">DEMO PLAYBOOK</span>
+            <h2 class="slide-title">Panduan Demonstrasi Langsung Ke Juri</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <span class="badge badge-green">Skenario 1: Kondisi Normal</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">Air 3.0 cm • Cerah • Bersih</h3>
+                    <p class="card-body" style="font-size:0.85rem;">Tunjukkan UI Dashboard berwarna hijau dengan status topbar AMAN.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-yellow">Skenario 2: Kondisi Waspada</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">Air 11.2 cm • Hujan • Ada Sampah</h3>
+                    <p class="card-body" style="font-size:0.85rem;">UI berubah menjadi warna kuning. Kirim tes Telegram WASPADA lewat endpoint API.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-red">Skenario 3: Kondisi Bahaya</span>
+                    <h3 class="card-title" style="margin-top:0.5rem;">Air 17.5 cm • Hujan Lebat • Tersumbat</h3>
+                    <p class="card-body" style="font-size:0.85rem;">UI berubah merah berkedip. HP juri mendenting notifikasi Telegram BAHAYA!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 22: Closing & QnA -->
+        <div class="slide" data-note="Penutup presentasi. Ucapkan terima kasih dan undang juri untuk memberikan pertanyaan.">
+            <span class="slide-tag">PENUTUP & QnA</span>
+            <h1 class="slide-title" style="font-size: 3rem;">Terima Kasih!</h1>
+            <p class="slide-subtitle">SI DAGO — "Pantau Selokan Cekatan, Bogor Tangguh Bencana."<br>Inovasi Pelajar SMK Wikrama Bogor untuk Bogor Innovation Awards 2026.</p>
+            <div class="card" style="max-width: 600px; margin-top: 1rem;">
+                <div class="card-header"><div class="card-icon" style="color:var(--accent-gold);"><i class="bx bx-conversation"></i></div><div class="card-title">Sesi Tanya Jawab (Q&A)</div></div>
+                <div class="card-body">Kami siap menjawab pertanyaan teknis seputar Hardware ESP32, Algoritma Scoring, Socket.IO Engine, maupun Skalabilitas Proyek.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Speaker Notes Panel -->
+    <div class="speaker-notes-panel" id="speaker-notes">
+        <i class="bx bx-user-voice"></i>
+        <div><strong>Catatan Presenter:</strong> <span id="note-text">Buka presentasi dengan menyapa juri BIA 2026.</span></div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <footer class="nav-controls">
+        <button class="btn-nav" id="btn-prev"><i class="bx bx-chevron-left"></i> Slide Sebelumnya</button>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Gunakan panah keyboard ⬅️ ➡️ untuk navigasi</span>
+        <button class="btn-nav" id="btn-next">Slide Selanjutnya <i class="bx bx-chevron-right"></i></button>
+    </footer>
+
+    <!-- Interactive Navigation Script -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const slideCounter = document.getElementById('slide-counter');
+        const noteText = document.getElementById('note-text');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        let currentSlide = 0;
+
+        function updateSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            slideCounter.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+            noteText.textContent = slides[currentSlide].getAttribute('data-note') || 'Tidak ada catatan.';
+        }
+
+        btnPrev.addEventListener('click', () => updateSlide(currentSlide - 1));
+        btnNext.addEventListener('click', () => updateSlide(currentSlide + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                updateSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                updateSlide(currentSlide - 1);
+            }
+        });
+    </script>
+</body>
+</html>

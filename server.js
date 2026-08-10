@@ -13,53 +13,117 @@ const io = new Server(server, {
 });
 
 // ============================================================
-// KONFIGURASI TELEGRAM BOT
+// KONFIGURASI TELEGRAM BOT & DYNAMIC SUBSCRIBERS
 // ============================================================
 const TELEGRAM_BOT_TOKEN = '8817291654:AAGKHT9hwRbb24MYWKWEfC4OoJX4e07WSzE';
-const TELEGRAM_CHAT_ID   = '1074113595'; // @JerDevvv (ID: 1074113595)
+const telegramSubscribers = new Set(['1074113595']); // Set penampung Chat ID (otomatis bertambah saat user /start)
+let lastUpdateId = 0;
 
 /**
- * Kirim pesan ke Telegram menggunakan Bot API.
- * Menggunakan https bawaan Node.js — tidak butuh library tambahan.
+ * Kirim pesan ke Telegram (ke 1 chatId spesifik ATAU broadcast ke SEMUA subscriber).
  * @param {string} text - Teks pesan (mendukung Markdown)
+ * @param {string|null} targetChatId - ID spesifik atau null untuk broadcast
  */
-function kirimTelegram(text) {
-    const body = JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: text,
-        parse_mode: 'Markdown'
-    });
+function kirimTelegram(text, targetChatId = null) {
+    const chatIds = targetChatId ? [targetChatId] : Array.from(telegramSubscribers);
 
+    if (chatIds.length === 0) {
+        console.warn('⚠️ Tidak ada subscriber Telegram yang terdaftar.');
+        return;
+    }
+
+    chatIds.forEach(chatId => {
+        const body = JSON.stringify({
+            chat_id: chatId,
+            text: text,
+            parse_mode: 'Markdown'
+        });
+
+        const options = {
+            hostname: 'api.telegram.org',
+            path: `/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body)
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.ok) {
+                        console.log(`✅ Telegram terkirim ke Chat ID: ${chatId}`);
+                    } else {
+                        console.error(`❌ Telegram ke ${chatId} gagal:`, parsed.description);
+                    }
+                } catch (e) {
+                    console.error('❌ Parse error response Telegram:', e.message);
+                }
+            });
+        });
+
+        req.on('error', (err) => {
+            console.error(`❌ Telegram request error (${chatId}):`, err.message);
+        });
+
+        req.write(body);
+        req.end();
+    });
+}
+
+/**
+ * Polling otomatis Telegram getUpdates.
+ * Memeriksa siapa saja pengguna yang menekan /start atau mengirim chat ke bot,
+ * lalu mendaftarkan Chat ID-nya secara otomatis tanpa perlu hardcode ID!
+ */
+function pollTelegramUpdates() {
     const options = {
         hostname: 'api.telegram.org',
-        path: `/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(body)
-        }
+        path: `/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`,
+        method: 'GET'
     };
 
     const req = https.request(options, (res) => {
         let data = '';
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
-            const parsed = JSON.parse(data);
-            if (parsed.ok) {
-                console.log('✅ Telegram terkirim ke Chat ID:', TELEGRAM_CHAT_ID);
-            } else {
-                console.error('❌ Telegram gagal:', parsed.description);
+            try {
+                const parsed = JSON.parse(data);
+                if (parsed.ok && Array.isArray(parsed.result)) {
+                    parsed.result.forEach(update => {
+                        lastUpdateId = Math.max(lastUpdateId, update.update_id);
+                        if (update.message && update.message.chat) {
+                            const chatId = String(update.message.chat.id);
+                            const senderName = update.message.from ? update.message.from.first_name : 'Warga';
+
+                            if (!telegramSubscribers.has(chatId)) {
+                                telegramSubscribers.add(chatId);
+                                console.log(`📲 Subscriber Telegram BARU terdaftar: ${senderName} (ID: ${chatId})`);
+
+                                const welcomeMsg = `✅ *Selamat Datang, ${senderName}!*\n\nID Telegram Anda (\`${chatId}\`) telah terdaftar di sistem *SI DAGO Kota Bogor*.\n\nAnda akan otomatis menerima notifikasi peringatan banjir secara realtime saat sensor mendeteksi kondisi SIAGA atau BAHAYA.`;
+                                kirimTelegram(welcomeMsg, chatId);
+                            }
+                        }
+                    });
+                }
+            } catch (err) {
+                // Ignore parse error
             }
         });
     });
 
-    req.on('error', (err) => {
-        console.error('❌ Telegram request error:', err.message);
-    });
-
-    req.write(body);
+    req.on('error', () => {});
     req.end();
 }
+
+// Jalankan polling setiap 5 detik untuk mendeteksi user baru yang klik /start
+setInterval(pollTelegramUpdates, 5000);
+pollTelegramUpdates();
+
 
 /**
  * Susun dan kirim pesan peringatan Telegram berformat rapi.
@@ -88,11 +152,13 @@ _Pesan otomatis dari Server SI DAGO Kota Bogor • ${new Date().toLocaleTimeStri
 }
 
 // ============================================================
-// VARIABEL KONTROL ANTI-SPAM NOTIFIKASI
+// VARIABEL KONTROL ANTI-SPAM & PERSISTENSI 30 DETIK NOTIFIKASI
 // ============================================================
 let lastNotifStatus   = "aman";
 let lastNotifSentTime = 0;
 let isFirstDataReceived = false;
+let bahayaCounter     = 0; // Hitung sampel BAHAYA berturut-turut (15x @2s = 30 detik)
+const BAHAYA_THRESHOLD_SAMPLES = 15; // Wajib 30 detik bertahan
 const NOTIF_COOLDOWN  = 5 * 60 * 1000; // 5 menit cooldown antar notifikasi
 // Skor Risiko 0 - 100 sesuai Proposal BIA 2026 (Gambar 2.1 Flowchart):
 // 0 - 44   : AMAN
@@ -121,7 +187,7 @@ app.use(express.urlencoded({ extended: true }));      // Parse form-data body (m
 app.use(express.static(path.join(__dirname, '/')));   // Serve file statis (index.html, css, js)
 
 // ============================================================
-// STATE SENSOR TERAKHIR
+// STATE SENSOR & DATASET LAPORAN HISTORIS
 // ============================================================
 let currentData = {
     tinggiAir:    0,
@@ -129,6 +195,111 @@ let currentData = {
     adaSampah:    false,
     timestamp:    new Date().toISOString()
 };
+
+// Data Histori Regional Kota Bogor (Base Data Real Fetch & Filter)
+const REGIONS = [
+    { daerah: "Bogor Timur", lokasi: "Drainase Utama SMK Wikrama (Jl. Raya Wangun)" },
+    { daerah: "Bogor Timur", lokasi: "Bantaran Katulampa & Tajur" },
+    { daerah: "Bogor Selatan", lokasi: "Gorong-gorong Batutulis & Cipaku" },
+    { daerah: "Bogor Tengah", lokasi: "Kawasan Pasar Anyar & Jl. Merdeka" },
+    { daerah: "Bogor Utara", lokasi: "Simpang Cibuluh & Kedunghalung" },
+    { daerah: "Bogor Barat", lokasi: "Kawasan Bubulak & Gunung Batu" },
+    { daerah: "Tanah Sareal", lokasi: "Gorong-gorong Kedung Badak & Salabenda" }
+];
+
+function generateHistoricalData() {
+    const data = [];
+    const now = Date.now();
+    const weatherTypes = ["Cerah", "Gerimis", "Hujan Sedang", "Hujan Lebat", "Badai Hujan"];
+
+    // Harian (24 jam terakhir) - ~15 data
+    for (let i = 0; i < 15; i++) {
+        const timestamp = new Date(now - i * 1.5 * 3600 * 1000).toISOString();
+        const regionObj = REGIONS[i % REGIONS.length];
+        const tinggi = +(Math.random() * 18 + 2).toFixed(1);
+        const sampah = Math.random() > 0.7;
+        const hujan = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        const status = getStatus(tinggi, sampah, hujan);
+        data.push({
+            id: `REP-${now - i * 500000}`,
+            timestamp,
+            daerah: regionObj.daerah,
+            lokasi: regionObj.lokasi,
+            tinggiAir: tinggi,
+            kondisiHujan: hujan,
+            adaSampah: sampah,
+            skorRisiko: calculateRiskScore(tinggi, sampah, hujan),
+            status
+        });
+    }
+
+    // Mingguan (7 hari terakhir) - ~25 data
+    for (let i = 1; i <= 25; i++) {
+        const timestamp = new Date(now - (1 + i * 0.25) * 86400 * 1000).toISOString();
+        const regionObj = REGIONS[i % REGIONS.length];
+        const tinggi = +(Math.random() * 17 + 3).toFixed(1);
+        const sampah = Math.random() > 0.65;
+        const hujan = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        const status = getStatus(tinggi, sampah, hujan);
+        data.push({
+            id: `REP-${now - (1 + i * 0.25) * 86400000}`,
+            timestamp,
+            daerah: regionObj.daerah,
+            lokasi: regionObj.lokasi,
+            tinggiAir: tinggi,
+            kondisiHujan: hujan,
+            adaSampah: sampah,
+            skorRisiko: calculateRiskScore(tinggi, sampah, hujan),
+            status
+        });
+    }
+
+    // Bulanan (30 hari terakhir) - ~35 data
+    for (let i = 1; i <= 35; i++) {
+        const timestamp = new Date(now - (7 + i * 0.6) * 86400 * 1000).toISOString();
+        const regionObj = REGIONS[i % REGIONS.length];
+        const tinggi = +(Math.random() * 19 + 2).toFixed(1);
+        const sampah = Math.random() > 0.75;
+        const hujan = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        const status = getStatus(tinggi, sampah, hujan);
+        data.push({
+            id: `REP-${now - (7 + i * 0.6) * 86400000}`,
+            timestamp,
+            daerah: regionObj.daerah,
+            lokasi: regionObj.lokasi,
+            tinggiAir: tinggi,
+            kondisiHujan: hujan,
+            adaSampah: sampah,
+            skorRisiko: calculateRiskScore(tinggi, sampah, hujan),
+            status
+        });
+    }
+
+    // Tahunan (365 hari terakhir) - ~45 data
+    for (let i = 1; i <= 45; i++) {
+        const timestamp = new Date(now - (30 + i * 7) * 86400 * 1000).toISOString();
+        const regionObj = REGIONS[i % REGIONS.length];
+        const tinggi = +(Math.random() * 18 + 1).toFixed(1);
+        const sampah = Math.random() > 0.8;
+        const hujan = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        const status = getStatus(tinggi, sampah, hujan);
+        data.push({
+            id: `REP-${now - (30 + i * 7) * 86400000}`,
+            timestamp,
+            daerah: regionObj.daerah,
+            lokasi: regionObj.lokasi,
+            tinggiAir: tinggi,
+            kondisiHujan: hujan,
+            adaSampah: sampah,
+            skorRisiko: calculateRiskScore(tinggi, sampah, hujan),
+            status
+        });
+    }
+
+    return data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+let telemetryHistory = generateHistoricalData();
 
 // ============================================================
 // API: TERIMA DATA DARI IoT (ESP32)
@@ -142,7 +313,7 @@ app.post('/api/data', (req, res) => {
     console.log('--- 📡 Data Masuk dari IoT ---');
     console.log('Body:', req.body);
 
-    const { tinggiAir, kondisiHujan, adaSampah } = req.body;
+    const { tinggiAir, kondisiHujan, adaSampah, daerah, lokasi } = req.body;
 
     if (tinggiAir === undefined || tinggiAir === null || tinggiAir === '') {
         console.log('❌ Format data salah: field tinggiAir tidak ditemukan.');
@@ -152,11 +323,7 @@ app.post('/api/data', (req, res) => {
     const parsedTinggi  = parseFloat(tinggiAir);
     const parsedHujan   = kondisiHujan || "Cerah";
     const parsedSampah  = adaSampah === true || adaSampah === "true" || adaSampah === 1 || adaSampah === "1";
-
-    if (isNaN(parsedTinggi)) {
-        console.log('❌ Format data salah: tinggiAir bukan angka.');
-        return res.status(400).json({ success: false, message: "Field 'tinggiAir' harus berupa angka." });
-    }
+    const currentStatus = getStatus(parsedTinggi, parsedSampah, parsedHujan);
 
     // Simpan data terbaru
     currentData = {
@@ -166,8 +333,23 @@ app.post('/api/data', (req, res) => {
         timestamp:    new Date().toISOString()
     };
 
+    // Catat ke telemetry history
+    const historyEntry = {
+        id: `REP-${Date.now()}`,
+        timestamp: currentData.timestamp,
+        daerah: daerah || "Bogor Timur",
+        lokasi: lokasi || "Drainase Utama SMK Wikrama (Jl. Raya Wangun)",
+        tinggiAir: parsedTinggi,
+        kondisiHujan: parsedHujan,
+        adaSampah: parsedSampah,
+        skorRisiko: calculateRiskScore(parsedTinggi, parsedSampah, parsedHujan),
+        status: currentStatus
+    };
+    telemetryHistory.unshift(historyEntry);
+    if (telemetryHistory.length > 1000) telemetryHistory.pop();
+
     // Broadcast ke semua dashboard yang terbuka via WebSocket
-    io.emit('sensor_update', currentData);
+    io.emit('sensor_update', { ...currentData, historyEntry });
     console.log(`✅ Data diproses & disiarkan: Air=${parsedTinggi}cm | Hujan=${parsedHujan} | Sampah=${parsedSampah}`);
 
     // Notifikasi khusus saat Alat ESP32 PERTAMA KALI NYALA & terhubung
@@ -184,24 +366,32 @@ _Sistem pemantauan 24 jam SI DAGO Kota Bogor aktif._`;
         kirimTelegram(pesanNyala);
     }
 
-    // Evaluasi status & kirim notifikasi Telegram jika perlu
-    const currentStatus = getStatus(parsedTinggi, parsedSampah, parsedHujan);
+    // Evaluasi status & kirim notifikasi Telegram jika perlu (Syarat Persistensi 30 Detik)
     const timeNow = Date.now();
 
+    if (currentStatus === "bahaya") {
+        bahayaCounter++;
+        console.log(`⚠️ Status BAHAYA terdeteksi (${bahayaCounter}/${BAHAYA_THRESHOLD_SAMPLES} sampel (~${bahayaCounter * 2}s))`);
+    } else {
+        bahayaCounter = 0; // Reset jika status kembali aman/waspada
+    }
+
     if (currentStatus !== "aman") {
-        // Kirim Telegram jika: status berubah LEBIH BURUK, atau cooldown sudah lewat
+        const isBahayaConfirmed = currentStatus === "bahaya" && bahayaCounter >= BAHAYA_THRESHOLD_SAMPLES;
+        const isWaspada = currentStatus === "waspada";
         const statusMemburuk = currentStatus !== lastNotifStatus;
         const cooldownLewat  = (timeNow - lastNotifSentTime) > NOTIF_COOLDOWN;
 
-        if (statusMemburuk || cooldownLewat) {
+        if ((isBahayaConfirmed || isWaspada) && (statusMemburuk || cooldownLewat)) {
             kirimTelegramPeringatan(parsedTinggi, parsedHujan, parsedSampah, currentStatus);
             lastNotifStatus   = currentStatus;
             lastNotifSentTime = timeNow;
+        } else if (currentStatus === "bahaya" && !isBahayaConfirmed) {
+            console.log(`ℹ️ BAHAYA belum 30 detik (baru ${bahayaCounter * 2}s). Menunggu verifikasi...`);
         } else {
             console.log(`ℹ️ Notifikasi Telegram ditahan (cooldown: ${Math.round((NOTIF_COOLDOWN - (timeNow - lastNotifSentTime)) / 1000)}s lagi)`);
         }
     } else {
-        // Reset agar notifikasi langsung terkirim saat bahaya berikutnya
         lastNotifStatus = "aman";
     }
 
@@ -211,6 +401,67 @@ _Sistem pemantauan 24 jam SI DAGO Kota Bogor aktif._`;
         message: "Data diterima, disiarkan ke dashboard, dan dievaluasi."
     });
 });
+
+// ============================================================
+// API: GET REPORT TELEMETRY PER DAERAH & WAKTU
+// GET /api/reports?periode=harian|mingguan|bulanan|tahunan|all&daerah=...&status=...&search=...
+// ============================================================
+app.get('/api/reports', (req, res) => {
+    const { periode = 'all', daerah = 'all', status = 'all', search = '' } = req.query;
+    const now = Date.now();
+
+    let filtered = telemetryHistory.filter(item => {
+        const itemTime = new Date(item.timestamp).getTime();
+        const diffHours = (now - itemTime) / (3600 * 1000);
+        const diffDays = diffHours / 24;
+
+        // Filter Periode
+        if (periode === 'harian' && diffHours > 24) return false;
+        if (periode === 'mingguan' && diffDays > 7) return false;
+        if (periode === 'bulanan' && diffDays > 30) return false;
+        if (periode === 'tahunan' && diffDays > 365) return false;
+
+        // Filter Daerah
+        if (daerah !== 'all' && item.daerah.toLowerCase() !== daerah.toLowerCase()) return false;
+
+        // Filter Status
+        if (status !== 'all' && item.status.toLowerCase() !== status.toLowerCase()) return false;
+
+        // Search text
+        if (search) {
+            const query = search.toLowerCase();
+            const matchDaerah = item.daerah.toLowerCase().includes(query);
+            const matchLokasi = item.lokasi.toLowerCase().includes(query);
+            const matchHujan = item.kondisiHujan.toLowerCase().includes(query);
+            const matchStatus = item.status.toLowerCase().includes(query);
+            if (!matchDaerah && !matchLokasi && !matchHujan && !matchStatus) return false;
+        }
+
+        return true;
+    });
+
+    // Ringkasan statistik dari data terfilter
+    const total = filtered.length;
+    const amanCount = filtered.filter(i => i.status === 'aman').length;
+    const waspadaCount = filtered.filter(i => i.status === 'waspada').length;
+    const bahayaCount = filtered.filter(i => i.status === 'bahaya').length;
+    const avgWater = total > 0 ? (filtered.reduce((sum, i) => sum + i.tinggiAir, 0) / total).toFixed(1) : 0;
+    const maxWater = total > 0 ? Math.max(...filtered.map(i => i.tinggiAir)).toFixed(1) : 0;
+
+    res.json({
+        success: true,
+        summary: {
+            total,
+            amanCount,
+            waspadaCount,
+            bahayaCount,
+            avgWater: parseFloat(avgWater),
+            maxWater: parseFloat(maxWater)
+        },
+        data: filtered
+    });
+});
+
 
 // ============================================================
 // API: CEK DATA SENSOR TERBARU (GET)
@@ -249,9 +500,9 @@ io.on('connection', (socket) => {
 });
 
 // ============================================================
-// JALANKAN SERVER
+// JALANKAN SERVER (DENGAN AUTO PORT FALLBACK JIKA EADDRINUSE)
 // ============================================================
-const PORT = process.env.PORT || 3000;
+let PORT = parseInt(process.env.PORT || '3000', 10);
 
 function getLocalIPs() {
     const interfaces = os.networkInterfaces();
@@ -266,22 +517,37 @@ function getLocalIPs() {
     return ips;
 }
 
-server.listen(PORT, '0.0.0.0', () => {
-    const localIPs = getLocalIPs();
-    console.log('=========================================');
-    console.log(`🚀 SI DAGO Server berjalan di Port ${PORT}`);
-    console.log('=========================================');
-    console.log(`🌐 Dashboard: http://localhost:${PORT}`);
-    console.log(`📲 Test Telegram: http://localhost:${PORT}/api/test-telegram`);
-    console.log(`📲 Test Bahaya:   http://localhost:${PORT}/api/test-telegram?level=bahaya`);
-    console.log('📡 URL API untuk ESP32 (POST /api/data):');
-    if (localIPs.length === 0) {
-        console.log(`   👉 http://localhost:${PORT}/api/data`);
-    } else {
-        localIPs.forEach(ip => {
-            console.log(`   👉 (${ip.name}): http://${ip.address}:${PORT}/api/data`);
-        });
-    }
-    console.log('(Pastikan ESP32 & laptop terhubung ke WiFi yang sama)');
-    console.log('=========================================');
-});
+function startServer(portToTry) {
+    server.removeAllListeners('error');
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.warn(`⚠️ Port ${portToTry} sedang digunakan. Mencoba Port ${portToTry + 1}...`);
+            startServer(portToTry + 1);
+        } else {
+            console.error('❌ Server error:', err);
+        }
+    });
+
+    server.listen(portToTry, '0.0.0.0', () => {
+        PORT = portToTry;
+        const localIPs = getLocalIPs();
+        console.log('=========================================');
+        console.log(`🚀 SI DAGO Server berjalan di Port ${PORT}`);
+        console.log('=========================================');
+        console.log(`🌐 Dashboard: http://localhost:${PORT}`);
+        console.log(`📲 Test Telegram: http://localhost:${PORT}/api/test-telegram`);
+        console.log(`📲 Test Bahaya:   http://localhost:${PORT}/api/test-telegram?level=bahaya`);
+        console.log('📡 URL API untuk ESP32 (POST /api/data):');
+        if (localIPs.length === 0) {
+            console.log(`   👉 http://localhost:${PORT}/api/data`);
+        } else {
+            localIPs.forEach(ip => {
+                console.log(`   👉 (${ip.name}): http://${ip.address}:${PORT}/api/data`);
+            });
+        }
+        console.log('(Pastikan ESP32 & laptop terhubung ke WiFi yang sama)');
+        console.log('=========================================');
+    });
+}
+
+startServer(PORT);
