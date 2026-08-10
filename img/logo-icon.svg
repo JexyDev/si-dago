@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="dropOutline" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#003B99" />
+    </linearGradient>
+
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80" />
+      <stop offset="100%" stop-color="#16A34A" />
+    </linearGradient>
+
+    <linearGradient id="waterWave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <linearGradient id="tunnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <linearGradient id="waterFlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Water Drop Outer Ring (Transparent Background) -->
+  <path d="M 250 25 
+           C 290 85, 430 215, 430 320 
+           A 180 180 0 0 1 70 320 
+           C 70 215, 210 85, 250 25 Z" 
+        fill="none" 
+        stroke="url(#dropOutline)" 
+        stroke-width="26" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+
+  <!-- GREEN LEAF (Top) -->
+  <g transform="translate(0, 0)">
+    <!-- Leaf base shape -->
+    <path d="M 250 80 
+             C 295 125, 290 180, 250 205 
+             C 210 180, 205 125, 250 80 Z" 
+          fill="url(#leafGrad)" />
+    <!-- Leaf stem/vein cutout -->
+    <path d="M 250 205 L 250 95" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" />
+    <path d="M 250 165 L 268 147 M 250 142 L 273 123 M 250 119 L 263 106" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M 250 165 L 232 147 M 250 142 L 227 123 M 250 119 L 237 106" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+  </g>
+
+  <!-- WATER WAVES (Middle) -->
+  <g stroke="url(#waterWave)" stroke-width="8.5" stroke-linecap="round" fill="none">
+    <path d="M 125 230 Q 155 215 185 230 T 245 230 T 305 230 T 365 230 T 375 230" />
+    <path d="M 120 252 Q 150 237 180 252 T 240 252 T 300 252 T 360 252 T 380 252" />
+  </g>
+
+  <!-- CULVERT ARCH & WATER TUNNEL (Bottom) -->
+  <g>
+    <!-- Tunnel Outer Structure / Arch -->
+    <path d="M 125 410 L 125 325 C 125 275, 375 275, 375 325 L 375 410 Z" 
+          fill="url(#tunnelGrad)" stroke="#475569" stroke-width="5" />
+    
+    <!-- Tunnel Inner Opening (Dark Hole) -->
+    <path d="M 152 410 L 152 335 C 152 295, 348 295, 348 335 L 348 410 Z" 
+          fill="#090D16" />
+
+    <!-- Water flowing inside tunnel base -->
+    <path d="M 152 372 Q 250 367 348 372 L 348 410 L 152 410 Z" fill="url(#waterFlow)" />
+
+    <!-- Water ripple lines in tunnel -->
+    <ellipse cx="250" cy="386" rx="65" ry="7" fill="none" stroke="#38BDF8" stroke-width="2" opacity="0.7" />
+    <ellipse cx="250" cy="399" rx="85" ry="9" fill="none" stroke="#7DD3FC" stroke-width="2" opacity="0.4" />
+    
+    <!-- IOT SENSOR DEVICE mounted on tunnel ceiling -->
+    <!-- Mounting Bracket -->
+    <rect x="232" y="292" width="36" height="10" rx="3" fill="#64748B" />
+    <!-- Sensor Main Box -->
+    <rect x="212" y="302" width="76" height="32" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="2.5" />
+    <!-- Ultrasonic Lenses (Dual circles) -->
+    <circle cx="234" cy="318" r="8.5" fill="#090D16" stroke="#94A3B8" stroke-width="2" />
+    <circle cx="234" cy="318" r="3.5" fill="#38BDF8" />
+    <circle cx="266" cy="318" r="8.5" fill="#090D16" stroke="#94A3B8" stroke-width="2" />
+    <circle cx="266" cy="318" r="3.5" fill="#38BDF8" />
+
+    <!-- Sonar Waves emitting from Sensor -->
+    <path d="M 236 341 A 18 18 0 0 0 264 341" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+    <path d="M 226 350 A 30 30 0 0 0 274 350" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    <path d="M 216 360 A 42 42 0 0 0 284 360" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" opacity="0.5" />
+
+    <!-- Laser sensor beam line down to water -->
+    <line x1="250" y1="334" x2="250" y2="386" stroke="#00E5FF" stroke-width="2" stroke-dasharray="4 3" />
+    <circle cx="250" cy="386" r="4.5" fill="#FFFFFF" opacity="0.9" />
+  </g>
+</svg>
