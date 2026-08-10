@@ -315,9 +315,39 @@ function connectSiDago() {
     });
 }
 
+// Sidebar Filter Handling
+function setupFilters() {
+    const filterKecamatan = document.getElementById('filter-kecamatan');
+    const filterStatus = document.getElementById('filter-status');
+
+    if (!filterKecamatan || !filterStatus) return;
+
+    function applyFilter() {
+        const selectedKec = filterKecamatan.value;
+        const selectedStat = filterStatus.value;
+        const cards = document.querySelectorAll('.dashboard-content-area .sensor-card');
+
+        cards.forEach(card => {
+            const cardKec = card.getAttribute('data-kecamatan') || 'tengah';
+            let cardStat = 'aman';
+            if (card.classList.contains('waspada')) cardStat = 'waspada';
+            if (card.classList.contains('bahaya')) cardStat = 'bahaya';
+
+            const matchKec = (selectedKec === 'semua' || cardKec === selectedKec);
+            const matchStat = (selectedStat === 'semua' || cardStat === selectedStat);
+
+            card.style.display = (matchKec && matchStat) ? '' : 'none';
+        });
+    }
+
+    filterKecamatan.addEventListener('change', applyFilter);
+    filterStatus.addEventListener('change', applyFilter);
+}
+
 // Start connection on load
 window.addEventListener('DOMContentLoaded', () => {
     // Initial Setup
     updateUI(0, "CERAH", false);
     connectSiDago();
+    setupFilters();
 });

@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Simple Dynamic Update Date/Time
     const updateTimes = document.querySelectorAll('.update-time-str');
     const now = new Date();
-    const timeStr = now.toLoc
-    aleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
     
     updateTimes.forEach(el => {
         el.textContent = timeStr;
