@@ -170,15 +170,48 @@ _Pesan otomatis dari Server SI DAGO Kota Bogor • ${new Date().toLocaleTimeStri
 }
 
 // ============================================================
-// VARIABEL KONTROL ANTI-SPAM & PERSISTENSI 30 DETIK NOTIFIKASI
+// VARIABEL KONTROL ANTI-SPAM & KONDISI NOTIFIKASI
 // ============================================================
 let lastNotifStatus   = "aman";
 let lastNotifSentTime = 0;
 let isFirstDataReceived = false;
 let bahayaCounter     = 0; // Hitung sampel BAHAYA berturut-turut (15x @2s = 30 detik)
-const BAHAYA_THRESHOLD_SAMPLES = 15; // Wajib 30 detik bertahan
-const NOTIF_COOLDOWN  = 5 * 60 * 1000; // 5 menit cooldown antar notifikasi
-// Skor Risiko 0 - 100 sesuai Proposal BIA 2026 (Gambar 2.1 Flowchart):
+const BAHAYA_THRESHOLD_SAMPLES = 15; // Wajib 30 detik bertahan sebelum konfirmasi BAHAYA
+
+// ⚙️ PERCOBAAN: cooldown 30 detik. Untuk produksi, ganti ke: 5 * 60 * 1000
+// ponytail: produksi pakai 5 menit, naikan kembali setelah demo selesai
+const NOTIF_COOLDOWN = 30 * 1000; // 30 detik
+
+// ============================================================
+// KONDISI BAHAYA SEJATI: KETIGA SENSOR SERENTAK EKSTREM
+// Air >= 15cm (75% gorong-gorong 20cm) + Hujan Lebat + Sampah Tersumbat
+// WAJIB KETIGA TERPENUHI agar notifikasi BAHAYA terkirim ke Telegram.
+// Ini beda dari skor risiko (untuk display), ini untuk trigger notifikasi.
+// ============================================================
+const BATAS_AIR_BAHAYA   = 15.0; // cm — >= 75% kapasitas gorong-gorong
+const HUJAN_BAHAYA_LIST  = ['hujan lebat', 'badai hujan']; // lowercase match
+
+/**
+ * Cek apakah kondisi benar-benar BAHAYA (3 sensor serentak ekstrem).
+ * @returns {boolean}
+ */
+function isBahayaSejati(tinggiAir, kondisiHujan, adaSampah) {
+    const airEkstrem   = tinggiAir >= BATAS_AIR_BAHAYA;
+    const hujanEkstrem = HUJAN_BAHAYA_LIST.includes((kondisiHujan || '').toLowerCase());
+    const sampahAda    = adaSampah === true;
+    const hasil = airEkstrem && hujanEkstrem && sampahAda;
+    if (!hasil) {
+        // Log sensor mana yang belum memenuhi syarat (debug)
+        const belum = [];
+        if (!airEkstrem)   belum.push(`Air ${tinggiAir.toFixed(1)}cm < ${BATAS_AIR_BAHAYA}cm`);
+        if (!hujanEkstrem) belum.push(`Hujan "${kondisiHujan}" bukan Lebat/Badai`);
+        if (!sampahAda)    belum.push('Sampah tidak terdeteksi');
+        console.log(`ℹ️ BAHAYA SEJATI belum terpenuhi: ${belum.join(' | ')}`);
+    }
+    return hasil;
+}
+
+// Skor Risiko 0 - 100 sesuai Proposal BIA 2026 (Gambar 2.1 Flowchart) — dipakai untuk display dashboard:
 // 0 - 44   : AMAN
 // 45 - 75  : WASPADA
 // 76 - 100 : BAHAYA
@@ -397,33 +430,60 @@ _Sistem pemantauan 24 jam SI DAGO Kota Bogor aktif._`;
         kirimTelegram(pesanNyala);
     }
 
-    // Evaluasi status & kirim notifikasi Telegram jika perlu (Syarat Persistensi 30 Detik)
+    // ============================================================
+    // EVALUASI NOTIFIKASI TELEGRAM
+    // BAHAYA   : hanya jika KETIGA sensor serentak ekstrem (isBahayaSejati)
+    //            + sudah persistent 30 detik (bahayaCounter >= threshold)
+    // WASPADA  : hanya kirim pertama kali saat naik dari AMAN → WASPADA
+    // Cooldown : 30 detik (⚙️ percobaan — produksi: 5 menit)
+    // ============================================================
     const timeNow = Date.now();
+    const cooldownLewat = (timeNow - lastNotifSentTime) > NOTIF_COOLDOWN;
 
     if (currentStatus === "bahaya") {
         bahayaCounter++;
-        console.log(`⚠️ Status BAHAYA terdeteksi (${bahayaCounter}/${BAHAYA_THRESHOLD_SAMPLES} sampel (~${bahayaCounter * 2}s))`);
+        console.log(`⚠️ Status BAHAYA terdeteksi (${bahayaCounter}/${BAHAYA_THRESHOLD_SAMPLES} sampel, ~${bahayaCounter * 2}s dari 30s)`);
     } else {
-        bahayaCounter = 0; // Reset jika status kembali aman/waspada
+        bahayaCounter = 0;
     }
 
-    if (currentStatus !== "aman") {
-        const isBahayaConfirmed = currentStatus === "bahaya" && bahayaCounter >= BAHAYA_THRESHOLD_SAMPLES;
-        const isWaspada = currentStatus === "waspada";
-        const statusMemburuk = currentStatus !== lastNotifStatus;
-        const cooldownLewat  = (timeNow - lastNotifSentTime) > NOTIF_COOLDOWN;
+    if (currentStatus === "bahaya") {
+        const persistent      = bahayaCounter >= BAHAYA_THRESHOLD_SAMPLES;
+        const bahayaSejati    = isBahayaSejati(parsedTinggi, parsedHujan, parsedSampah);
 
-        if ((isBahayaConfirmed || isWaspada) && (statusMemburuk || cooldownLewat)) {
-            kirimTelegramPeringatan(parsedTinggi, parsedHujan, parsedSampah, currentStatus);
-            lastNotifStatus   = currentStatus;
-            lastNotifSentTime = timeNow;
-        } else if (currentStatus === "bahaya" && !isBahayaConfirmed) {
-            console.log(`ℹ️ BAHAYA belum 30 detik (baru ${bahayaCounter * 2}s). Menunggu verifikasi...`);
+        if (!persistent) {
+            console.log(`⏳ BAHAYA belum persistent: baru ${bahayaCounter * 2}s, tunggu 30s.`);
+        } else if (!bahayaSejati) {
+            console.log(`🛡️ BAHAYA ditahan: sensor tidak semua ekstrem (lihat log di atas).`);
+        } else if (!cooldownLewat) {
+            console.log(`🔕 Cooldown aktif: tunggu ${Math.round((NOTIF_COOLDOWN - (timeNow - lastNotifSentTime)) / 1000)}s lagi.`);
         } else {
-            console.log(`ℹ️ Notifikasi Telegram ditahan (cooldown: ${Math.round((NOTIF_COOLDOWN - (timeNow - lastNotifSentTime)) / 1000)}s lagi)`);
+            // ✅ Ketiga syarat terpenuhi: kirim BAHAYA
+            kirimTelegramPeringatan(parsedTinggi, parsedHujan, parsedSampah, 'bahaya');
+            lastNotifStatus   = 'bahaya';
+            lastNotifSentTime = timeNow;
         }
+
+    } else if (currentStatus === "waspada") {
+        // WASPADA hanya kirim saat pertama kali naik dari AMAN → WASPADA
+        const naikDariAman = lastNotifStatus === "aman";
+        if (naikDariAman && cooldownLewat) {
+            kirimTelegramPeringatan(parsedTinggi, parsedHujan, parsedSampah, 'waspada');
+            lastNotifStatus   = 'waspada';
+            lastNotifSentTime = timeNow;
+        } else if (!naikDariAman) {
+            console.log(`ℹ️ WASPADA ditahan: status sebelumnya sudah "${lastNotifStatus}", skip re-notif.`);
+        } else {
+            console.log(`🔕 WASPADA cooldown: tunggu ${Math.round((NOTIF_COOLDOWN - (timeNow - lastNotifSentTime)) / 1000)}s lagi.`);
+        }
+
     } else {
+        // Status AMAN — reset tracker
+        if (lastNotifStatus !== "aman") {
+            console.log(`✅ Status kembali AMAN. Tracker reset.`);
+        }
         lastNotifStatus = "aman";
+        bahayaCounter   = 0;
     }
 
     return res.status(200).json({
