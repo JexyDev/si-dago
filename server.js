@@ -99,14 +99,24 @@ function pollTelegramUpdates() {
                         if (update.message && update.message.chat) {
                             const chatId = String(update.message.chat.id);
                             const senderName = update.message.from ? update.message.from.first_name : 'Warga';
+                            const text = (update.message.text || '').trim();
+                            const isNew = !telegramSubscribers.has(chatId);
 
-                            if (!telegramSubscribers.has(chatId)) {
-                                telegramSubscribers.add(chatId);
-                                console.log(`📲 Subscriber Telegram BARU terdaftar: ${senderName} (ID: ${chatId})`);
+                            telegramSubscribers.add(chatId);
 
-                                const welcomeMsg = `✅ *Selamat Datang, ${senderName}!*\n\nID Telegram Anda (\`${chatId}\`) telah terdaftar di sistem *SI DAGO Kota Bogor*.\n\nAnda akan otomatis menerima notifikasi peringatan banjir secara realtime saat sensor mendeteksi kondisi SIAGA atau BAHAYA.`;
-                                kirimTelegram(welcomeMsg, chatId);
+                            if (isNew || text.startsWith('/start') || text.startsWith('/mulai') || text.toLowerCase() === 'start') {
+                                console.log(`📲 Subscriber Telegram aktif: ${senderName} (ID: ${chatId})`);
+                                const replyMsg = `✅ *Selamat Datang, ${senderName}!*
+
+Sistem *SI DAGO Kota Bogor* berhasil terhubung dengan Telegram Anda.
+
+🆔 *ID Telegram:* \`${chatId}\`
+🔔 *Status Notifikasi:* AKTIF 🟢
+
+Anda akan menerima notifikasi darurat secara otomatis di sini jika sensor mendeteksi potensi luapan selokan atau penyumbatan sampah.`;
+                                kirimTelegram(replyMsg, chatId);
                             }
+
                         }
                     });
                 }
