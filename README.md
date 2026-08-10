@@ -55,7 +55,7 @@ Jika teman kamu menggunakan ESP32, berikan referensi baris kode HTTP POST ini:
 
 const char* ssid = "NAMA_WIFI";
 const char* password = "PASSWORD_WIFI";
-const char* serverName = "http://10.174.79.217:3000/api/data";
+const char* serverName = "http://10.23.177.105:3000/api/data";
 
 // ... (setup wifi) ...
 
