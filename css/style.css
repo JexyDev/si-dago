@@ -3,28 +3,28 @@
    Bogor City Smart Flood Monitoring Theme
    ============================================================ */
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,300..900;1,300..900&family=Oswald:wght@500;700&display=swap');
+/* Import Google Fonts: Plus Jakarta Sans (Body), Outfit (Headings), Oswald (Numbers) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=Oswald:wght@500;700&display=swap');
 
 :root {
-    /* Color Palette */
-    --biru-bogor: #0A4F6E;       /* Biru teal gelap — air bersih */
-    --emas-bogor: #C8860A;       /* Emas hangat — Kujang Bogor */
-    --hijau-aman: #1A8C3E;       /* Hijau solid — status AMAN */
-    --kuning-waspada: #D4860A;   /* Kuning tua — status WASPADA */
-    --merah-bahaya: #C0271B;     /* Merah solid — status BAHAYA */
-    --krem-latar: #F5F0E8;       /* Krem hangat — koran/papan kelurahan */
-    --abu-teks: #2C2C2C;         /* Teks utama — kontras tinggi */
-    --abu-muda: #EAE3D2;         /* Abu-abu hangat untuk border */
+    /* Natural Slate & City Color Palette */
+    --biru-bogor: #0F2937;       /* Deep Slate Navy — Bogor smart city */
+    --emas-bogor: #D97706;       /* Warm Accent Gold — Kujang Bogor */
+    --hijau-aman: #059669;       /* Emerald Green — AMAN */
+    --kuning-waspada: #D97706;   /* Warm Amber — WASPADA */
+    --merah-bahaya: #DC2626;     /* Crimson Red — BAHAYA */
+    --krem-latar: #F8FAFC;       /* Natural Light Slate Background */
+    --abu-teks: #0F172A;         /* Slate 900 Text — High Contrast */
+    --abu-muda: #E2E8F0;         /* Clean Slate 200 Border */
     --putih-bersih: #FFFFFF;
     
-    /* Glow/Shadow States */
-    --bayangan-halus: 0 4px 16px rgba(10, 79, 110, 0.08);
-    --bayangan-hover: 0 12px 28px rgba(10, 79, 110, 0.15);
+    /* Clean Natural Shadows */
+    --bayangan-halus: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 16px rgba(15, 23, 42, 0.03);
+    --bayangan-hover: 0 10px 30px rgba(15, 23, 42, 0.08);
     
-    /* Fonts configuration */
-    --font-heading: 'Lora', serif;
-    --font-body: 'Nunito', sans-serif;
+    /* Modern Fonts Configuration */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
     --font-number: 'Oswald', sans-serif;
 }
 
@@ -375,38 +375,19 @@ button:focus, a:focus {
 
 .sensor-card {
     background-color: var(--putih-bersih);
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid var(--abu-muda);
     border-left: 5px solid var(--hijau-aman);
-    padding: 1.75rem;
-    box-shadow: 0 4px 20px rgba(10, 79, 110, 0.07), 0 1px 4px rgba(0,0,0,0.04);
-    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.02);
+    transition: all 0.25s ease-in-out;
     position: relative;
-    overflow: hidden;
 }
-
-/* Subtle top-right decorative glow per status */
-.sensor-card::after {
-    content: '';
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    opacity: 0.06;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-.sensor-card.aman::after  { background-color: var(--hijau-aman); }
-.sensor-card.waspada::after { background-color: var(--kuning-waspada); }
-.sensor-card.bahaya::after  { background-color: var(--merah-bahaya); }
 
 .sensor-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 40px rgba(10, 79, 110, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
 }
-.sensor-card:hover::after { opacity: 0.12; }
 
 .sensor-card.aman { border-left-color: var(--hijau-aman); }
 .sensor-card.waspada { border-left-color: var(--kuning-waspada); }
@@ -421,12 +402,12 @@ button:focus, a:focus {
 
 .card-badge {
     font-family: var(--font-number);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 5px 14px;
-    border-radius: 50px;
+    padding: 4px 12px;
+    border-radius: 6px;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     color: var(--putih-bersih);
     display: inline-flex;
     align-items: center;
@@ -439,8 +420,8 @@ button:focus, a:focus {
 
 .card-time {
     font-size: 0.8rem;
-    color: #777;
-    font-weight: 700;
+    color: #64748b;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -448,7 +429,7 @@ button:focus, a:focus {
 
 .card-location {
     font-family: var(--font-heading);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     color: var(--biru-bogor);
     font-weight: 700;
     margin-bottom: 0.25rem;
@@ -456,14 +437,14 @@ button:focus, a:focus {
 
 .card-sublocation {
     font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
 }
 
 /* Metric Display Container */
 .card-metrics-box {
-    background-color: var(--krem-latar);
+    background-color: #f8fafc;
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin-bottom: 1.25rem;
@@ -471,9 +452,9 @@ button:focus, a:focus {
 }
 
 .metric-label {
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: #555;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: flex;
@@ -492,12 +473,8 @@ button:focus, a:focus {
     font-family: var(--font-number);
     font-size: 3rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--biru-bogor) 0%, #1a7fa0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--biru-bogor);
     line-height: 1;
-    transition: all 0.4s ease;
 }
 
 .metric-unit {
@@ -965,13 +942,12 @@ button:focus, a:focus {
     animation: pulse-danger-dot 1.2s infinite;
 }
 
-/* Chart Container & Panel styles */
 .chart-panel-card {
-    background: linear-gradient(145deg, #ffffff 0%, #fafbff 100%);
+    background-color: var(--putih-bersih);
     border: 1px solid var(--abu-muda);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 4px 24px rgba(10, 79, 110, 0.08);
+    box-shadow: var(--bayangan-halus);
     margin-top: 2rem;
 }
 
