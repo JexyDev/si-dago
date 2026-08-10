@@ -66,21 +66,18 @@
                     <p class="section-desc" style="text-align: left;">Data bersumber langsung dari alat sensor di
                         lapangan, terupdate otomatis tanpa refresh.</p>
                 </div>
-                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                    <div class="dashboard-live-badge">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                    <div class="dashboard-live-badge" style="margin-left: 0;">
                         <span class="dashboard-live-dot"></span>
-                        <span>● LIVE DATA</span>
+                        <span>LIVE DATA</span>
                     </div>
-                    <div class="status-indicator"
-                        style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
+                    <div class="status-indicator">
                         <span class="pulse-dot connected" id="connection-dot"></span>
-                        <span id="connection-text"
-                            style="color: var(--abu-teks); font-weight: 700;">Menghubungkan...</span>
+                        <span id="connection-text">Menghubungkan...</span>
                     </div>
-                    <div class="status-indicator"
-                        style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
+                    <div class="status-indicator">
                         <span class="pulse-dot" id="sensor-dot"></span>
-                        <span id="sensor-text" style="color: var(--abu-teks); font-weight: 700;">Sensor Offline</span>
+                        <span id="sensor-text">Sensor Offline</span>
                     </div>
                 </div>
             </div>

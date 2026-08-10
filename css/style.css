@@ -938,13 +938,12 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.85rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--merah-bahaya);
-    background-color: rgba(192, 39, 27, 0.08);
-    padding: 4px 10px;
+    background-color: rgba(220, 38, 38, 0.08);
+    padding: 6px 14px;
     border-radius: 50px;
-    border: 1px solid rgba(192, 39, 27, 0.25);
-    margin-left: 0.75rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .dashboard-live-dot {
@@ -953,6 +952,40 @@ button:focus, a:focus {
     background-color: var(--merah-bahaya);
     border-radius: 50%;
     animation: pulse-danger-dot 1.2s infinite;
+}
+
+/* Status Indicator Pills */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background-color: var(--putih-bersih);
+    border: 1px solid var(--abu-muda);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--abu-teks);
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #94a3b8;
+    display: inline-block;
+}
+
+.pulse-dot.connected {
+    background-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+    animation: pulse-dot-anim 1.5s infinite;
+}
+
+@keyframes pulse-dot-anim {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
 }
 
 .chart-panel-card {
