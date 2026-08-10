@@ -16,7 +16,7 @@ const io = new Server(server, {
 // KONFIGURASI TELEGRAM BOT
 // ============================================================
 const TELEGRAM_BOT_TOKEN = '8817291654:AAGKHT9hwRbb24MYWKWEfC4OoJX4e07WSzE';
-const TELEGRAM_CHAT_ID   = '7745145566';
+const TELEGRAM_CHAT_ID   = '1074113595'; // @JerDevvv (ID: 1074113595)
 
 /**
  * Kirim pesan ke Telegram menggunakan Bot API.
