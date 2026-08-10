@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantau Selokan Real-time | SI DAGO Kota Bogor</title>
-    <meta name="description" content="Dashboard monitoring tinggi air, hujan, dan sampah selokan Kota Bogor secara live dan real-time.">
+    <meta name="description"
+        content="Dashboard monitoring tinggi air, hujan, dan sampah selokan Kota Bogor secara live dan real-time.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
     <!-- Font Icons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <!-- Main Style Sheet -->
@@ -18,6 +22,7 @@
     <!-- Chart.js Annotation Plugin (garis batas WASPADA & BAHAYA) -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
 </head>
+
 <body>
 
     <!-- Top Status Banner Bar (Controlled via JS) -->
@@ -52,22 +57,28 @@
     <!-- Main Dashboard Section -->
     <section class="section section-krem" style="padding: 2rem 0 5rem;">
         <div class="section-container" style="max-width: 1350px; padding: 0 1.5rem;">
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <div>
-                    <h2 class="section-title" style="margin-bottom: 0.25rem; text-align: left;">Pantau Selokan Sekarang</h2>
-                    <p class="section-desc" style="text-align: left;">Data bersumber langsung dari alat sensor di lapangan, terupdate otomatis tanpa refresh.</p>
+                    <h2 class="section-title" style="margin-bottom: 0.25rem; text-align: left;">Pantau Selokan Sekarang
+                    </h2>
+                    <p class="section-desc" style="text-align: left;">Data bersumber langsung dari alat sensor di
+                        lapangan, terupdate otomatis tanpa refresh.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                     <div class="dashboard-live-badge">
                         <span class="dashboard-live-dot"></span>
                         <span>● LIVE DATA</span>
                     </div>
-                    <div class="status-indicator" style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
+                    <div class="status-indicator"
+                        style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
                         <span class="pulse-dot connected" id="connection-dot"></span>
-                        <span id="connection-text" style="color: var(--abu-teks); font-weight: 700;">Menghubungkan...</span>
+                        <span id="connection-text"
+                            style="color: var(--abu-teks); font-weight: 700;">Menghubungkan...</span>
                     </div>
-                    <div class="status-indicator" style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
+                    <div class="status-indicator"
+                        style="background-color: var(--putih-bersih); box-shadow: var(--bayangan-halus);">
                         <span class="pulse-dot" id="sensor-dot"></span>
                         <span id="sensor-text" style="color: var(--abu-teks); font-weight: 700;">Sensor Offline</span>
                     </div>
@@ -96,11 +107,11 @@
 
             <!-- Dashboard Layout (Sidebar + Cards) -->
             <div class="dashboard-layout">
-                
+
                 <!-- Left Sidebar Filters -->
                 <aside class="sidebar">
                     <h3 class="sidebar-title"><i class="bx bx-filter-alt"></i> Filter Wilayah</h3>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="filter-kecamatan">Kecamatan</label>
                         <select class="form-select" id="filter-kecamatan">
@@ -123,7 +134,8 @@
                         </select>
                     </div>
 
-                    <div style="margin-top: 2rem; font-size: 0.85rem; color: #555; background-color: var(--krem-latar); padding: 1rem; border-radius: 8px; border: 1px dashed var(--abu-muda);">
+                    <div
+                        style="margin-top: 2rem; font-size: 0.85rem; color: #555; background-color: var(--krem-latar); padding: 1rem; border-radius: 8px; border: 1px dashed var(--abu-muda);">
                         <strong>💡 Info Warga:</strong><br>
                         Gunakan filter di atas untuk menampilkan titik selokan khusus di sekitar lingkungan RT/RW Anda.
                     </div>
@@ -131,19 +143,20 @@
 
                 <!-- Right Content Grid -->
                 <main class="dashboard-content-area">
-                    
+
                     <!-- Cards Grid -->
                     <div class="cards-grid" style="margin-bottom: 2rem;">
-                        
+
                         <!-- CARD 1: LIVE SENSOR (Connects to ESP32!) -->
                         <div class="sensor-card aman" id="alert-card" data-kecamatan="timur">
                             <div class="card-top">
                                 <span class="card-badge aman" id="live-card-badge">🟢 AMAN</span>
-                                <span class="card-time"><i class="bx bx-broadcast" style="color: var(--merah-bahaya);"></i> LIVE SENSOR</span>
+                                <span class="card-time"><i class="bx bx-broadcast"
+                                        style="color: var(--merah-bahaya);"></i> LIVE SENSOR</span>
                             </div>
                             <h3 class="card-location">Drainase SMK Wikrama</h3>
                             <p class="card-sublocation">Jl. Raya Wangun — Kel. Sindangsari, Kec. Bogor Timur</p>
-                            
+
                             <div class="card-metrics-box">
                                 <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
                                 <div class="metric-number-display">
@@ -152,24 +165,30 @@
                                 </div>
                                 <div class="metric-desc" id="status-desc">Ketinggian normal. Aliran lancar.</div>
                                 <div class="custom-progress">
-                                    <div class="custom-progress-bar progress-safe" id="water-bar" style="width: 0%"></div>
+                                    <div class="custom-progress-bar progress-safe" id="water-bar" style="width: 0%">
+                                    </div>
                                 </div>
                             </div>
-                            
+
                             <div class="metric-row">
                                 <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
                                 <span class="metric-row-value" id="rain-status">CERAH</span>
                             </div>
                             <div class="metric-row">
                                 <span class="metric-row-label"><i class="bx bx-trash"></i> Gorong-gorong</span>
-                                <span class="metric-row-value" id="trash-status" style="color: var(--hijau-aman)">Lancar / Bersih</span>
+                                <span class="metric-row-value" id="trash-status" style="color: var(--hijau-aman)">Lancar
+                                    / Bersih</span>
                             </div>
-                            <div class="metric-row" style="background-color: rgba(0,0,0,0.02); padding: 0.5rem; border-radius: 4px; border: none; margin-top: 0.5rem;">
-                                <span class="metric-row-label" style="font-weight: 800; color: var(--biru-bogor);">Risiko Luapan</span>
-                                <span class="metric-row-value" id="live-risk-pct" style="color: var(--biru-bogor); font-family: var(--font-number); font-size: 1.15rem;">0%</span>
+                            <div class="metric-row"
+                                style="background-color: rgba(0,0,0,0.02); padding: 0.5rem; border-radius: 4px; border: none; margin-top: 0.5rem;">
+                                <span class="metric-row-label"
+                                    style="font-weight: 800; color: var(--biru-bogor);">Risiko Luapan</span>
+                                <span class="metric-row-value" id="live-risk-pct"
+                                    style="color: var(--biru-bogor); font-family: var(--font-number); font-size: 1.15rem;">0%</span>
                             </div>
-                            
-                            <div id="live-card-status-box" style="margin-top: 1rem; font-size: 0.85rem; font-weight: 700; color: #555; text-align: center;">
+
+                            <div id="live-card-status-box"
+                                style="margin-top: 1rem; font-size: 0.85rem; font-weight: 700; color: #555; text-align: center;">
                                 Status Utama: <span id="status-title" style="color: var(--hijau-aman)">Aman</span>
                             </div>
                         </div>
@@ -182,7 +201,7 @@
                             </div>
                             <h3 class="card-location">Selokan SDN Pajajaran 1</h3>
                             <p class="card-sublocation">Jl. Pajajaran — Kel. Baranangsiang, Kec. Bogor Timur</p>
-                            
+
                             <div class="card-metrics-box">
                                 <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
                                 <div class="metric-number-display">
@@ -194,7 +213,7 @@
                                     <div class="custom-progress-bar progress-safe" style="width: 25%"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="metric-row">
                                 <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
                                 <span class="metric-row-value">Cerah / Berawan</span>
@@ -205,7 +224,8 @@
                             </div>
                             <div class="metric-row" style="border: none; margin-top: 0.5rem;">
                                 <span class="metric-row-label">Risiko Luapan</span>
-                                <span class="metric-row-value" style="color: var(--hijau-aman); font-family: var(--font-number);">10%</span>
+                                <span class="metric-row-value"
+                                    style="color: var(--hijau-aman); font-family: var(--font-number);">10%</span>
                             </div>
                         </div>
 
@@ -217,7 +237,7 @@
                             </div>
                             <h3 class="card-location">Gorong-gorong Sempur</h3>
                             <p class="card-sublocation">RT 03 / RW 07 — Kel. Sempur, Kec. Bogor Tengah</p>
-                            
+
                             <div class="card-metrics-box">
                                 <div class="metric-label"><i class="bx bx-ruler"></i> Ketinggian Air</div>
                                 <div class="metric-number-display">
@@ -229,7 +249,7 @@
                                     <div class="custom-progress-bar progress-waspada" style="width: 63%"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="metric-row">
                                 <span class="metric-row-label"><i class="bx bx-cloud-rain"></i> Curah Hujan</span>
                                 <span class="metric-row-value">Hujan Gerimis</span>
@@ -240,7 +260,8 @@
                             </div>
                             <div class="metric-row" style="border: none; margin-top: 0.5rem;">
                                 <span class="metric-row-label">Risiko Luapan</span>
-                                <span class="metric-row-value" style="color: var(--kuning-waspada); font-family: var(--font-number);">58%</span>
+                                <span class="metric-row-value"
+                                    style="color: var(--kuning-waspada); font-family: var(--font-number);">58%</span>
                             </div>
                         </div>
 
@@ -263,8 +284,9 @@
                             <i class="bx bx-history" style="color: var(--biru-bogor); font-size: 1.6rem;"></i>
                             Riwayat Laporan Kejadian Terkini
                         </h3>
-                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Log riwayat perubahan data sensor di sistem gorong-gorong Kota Bogor secara real-time.</p>
-                        
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Log riwayat perubahan data
+                            sensor di sistem gorong-gorong Kota Bogor secara real-time.</p>
+
                         <div class="log-table-container">
                             <table class="log-table">
                                 <thead>
@@ -282,21 +304,24 @@
                                         <td>Gorong-gorong Sempur</td>
                                         <td>Air: 38.2 cm | Hujan: Rintik</td>
                                         <td style="color: var(--kuning-waspada)">Sampah Ringan</td>
-                                        <td><span class="card-badge waspada" style="font-size: 0.75rem; padding: 3px 8px;">WASPADA</span></td>
+                                        <td><span class="card-badge waspada"
+                                                style="font-size: 0.75rem; padding: 3px 8px;">WASPADA</span></td>
                                     </tr>
                                     <tr>
                                         <td class="log-time">09:47</td>
                                         <td>Selokan Jl. Pajajaran</td>
                                         <td>Air: 12.4 cm | Hujan: Berawan</td>
                                         <td style="color: var(--hijau-aman)">Lancar / Bersih</td>
-                                        <td><span class="card-badge aman" style="font-size: 0.75rem; padding: 3px 8px;">AMAN</span></td>
+                                        <td><span class="card-badge aman"
+                                                style="font-size: 0.75rem; padding: 3px 8px;">AMAN</span></td>
                                     </tr>
                                     <tr>
                                         <td class="log-time">08:30</td>
                                         <td>Drainase SMK Wikrama</td>
                                         <td>Sistem diaktifkan / Sensor online</td>
                                         <td style="color: var(--hijau-aman)">Sistem Normal</td>
-                                        <td><span class="card-badge aman" style="font-size: 0.75rem; padding: 3px 8px;">AMAN</span></td>
+                                        <td><span class="card-badge aman"
+                                                style="font-size: 0.75rem; padding: 3px 8px;">AMAN</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -305,7 +330,7 @@
 
                 </main>
             </div>
-            
+
         </div>
     </section>
 
@@ -317,10 +342,11 @@
                     <i class="bx bx-water"></i>
                     <h2>SI DAGO</h2>
                 </a>
-                <p>Sistem monitoring selokan pintar Kota Bogor untuk peringatan dini bencana banjir bandang lokal. Dirancang ramah lansia, kontras tinggi, dan mudah dimengerti.</p>
+                <p>Sistem monitoring selokan pintar Kota Bogor untuk peringatan dini bencana banjir bandang lokal.
+                    Dirancang ramah lansia, kontras tinggi, dan mudah dimengerti.</p>
                 <p>Dikembangkan oleh Pelajar PPLG untuk kebaikan warga Bogor.</p>
             </div>
-            
+
             <div class="footer-col">
                 <h3>Tautan Cepat</h3>
                 <ul class="footer-links-list">
@@ -331,7 +357,7 @@
                     <li><a href="notifikasi.html">Daftar Peringatan Telegram</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-col">
                 <h3>Kontak & Info Resmi</h3>
                 <ul class="footer-contact-list">
@@ -342,9 +368,10 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer-bottom-bar">
-            <p>Data sensor diperbarui otomatis setiap 30 detik | Versi Proyek 1.0.0 (2026) | Dibuat dengan ❤️ di Bogor untuk ketangguhan bencana kota.</p>
+            <p>Data sensor diperbarui otomatis setiap 30 detik | Versi Proyek 1.0.0 (2026) | Dibuat dengan ❤️ di Bogor
+                untuk ketangguhan bencana kota.</p>
         </div>
     </footer>
 
@@ -355,4 +382,5 @@
     <!-- Real-time dashboard logic -->
     <script src="js/main.js"></script>
 </body>
+
 </html>
