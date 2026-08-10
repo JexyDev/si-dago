@@ -168,14 +168,14 @@ button:focus, a:focus {
     padding: 0.5rem;
 }
 
-/* Hero Section */
+/* Hero Section - Bright Modern Light Theme */
 .hero {
     position: relative;
-    background: linear-gradient(135deg, #052c3e 0%, #0c425c 100%);
-    color: var(--putih-bersih);
-    padding: 4rem 1.5rem 6rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    color: var(--abu-teks);
+    padding: 4.5rem 1.5rem 4.5rem;
     text-align: center;
-    overflow: hidden;
+    border-bottom: 1px solid var(--abu-muda);
 }
 
 .hero-content {
@@ -187,78 +187,85 @@ button:focus, a:focus {
 
 .hero-label {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: 2px;
     color: var(--emas-bogor);
     text-transform: uppercase;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    background-color: rgba(217, 119, 6, 0.08);
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 50px;
+    border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 .hero-status-box {
     display: inline-block;
-    padding: 1.5rem 4rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 1.25rem 3.5rem;
+    border-radius: 50px;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .hero-status-box.status-aman {
-    background-color: var(--hijau-aman);
-    border: 3px solid rgba(255,255,255,0.2);
+    background-color: #ecfdf5;
+    border: 2px solid #a7f3d0;
+    color: #065f46;
 }
 
 .hero-status-box.status-waspada {
-    background-color: var(--kuning-waspada);
-    border: 3px solid rgba(255,255,255,0.2);
+    background-color: #fffbeb;
+    border: 2px solid #fde68a;
+    color: #92400e;
     animation: pulse-border-waspada 2s infinite;
 }
 
 .hero-status-box.status-bahaya {
-    background-color: var(--merah-bahaya);
-    border: 3px solid rgba(255,255,255,0.4);
+    background-color: #fef2f2;
+    border: 2px solid #fecaca;
+    color: #991b1b;
     animation: blink-border-danger 1.5s infinite;
 }
 
 .hero-status-text {
     font-family: var(--font-number);
-    font-size: 4.5rem;
+    font-size: 3.5rem;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     line-height: 1;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 2.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    color: var(--biru-bogor);
+    margin-bottom: 0.75rem;
     font-weight: 700;
+    line-height: 1.25;
 }
 
 .hero-subtitle {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 2rem;
+    color: #475569;
+    margin-bottom: 2.25rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
 }
 
 .hero-buttons {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
 }
 
-/* Gunung Salak Silhouette SVG overlay */
+/* Salak silhouette disabled in modern light mode */
 .salak-silhouette {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    z-index: 2;
-    pointer-events: none;
+    display: none;
 }
 
 /* UI Elements & Buttons */
@@ -282,22 +289,25 @@ button:focus, a:focus {
 .btn-primary {
     background-color: var(--emas-bogor);
     color: var(--putih-bersih);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
 }
 
 .btn-primary:hover {
-    background-color: #a06a08;
+    background-color: #b45309;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(200, 134, 10, 0.4);
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
 }
 
 .btn-secondary {
-    background-color: transparent;
-    color: var(--putih-bersih);
-    border: 2px solid var(--putih-bersih);
+    background-color: var(--putih-bersih);
+    color: var(--biru-bogor);
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .btn-secondary:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: #f8fafc;
+    border-color: #94a3b8;
     transform: translateY(-2px);
 }
 
