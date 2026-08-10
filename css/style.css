@@ -154,6 +154,8 @@ button:focus, a:focus {
 .nav-link:hover, .nav-link.active {
     color: var(--emas-bogor);
     border-bottom-color: var(--emas-bogor);
+    background-color: rgba(200, 134, 10, 0.1);
+    border-radius: 6px;
 }
 
 .nav-toggle {
@@ -373,20 +375,38 @@ button:focus, a:focus {
 
 .sensor-card {
     background-color: var(--putih-bersih);
-    border-radius: 12px;
+    border-radius: 16px;
     border: 1px solid var(--abu-muda);
-    border-left: 6px solid var(--hijau-aman); /* Default left border */
+    border-left: 5px solid var(--hijau-aman);
     padding: 1.75rem;
-    box-shadow: var(--bayangan-halus);
-    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 4px 20px rgba(10, 79, 110, 0.07), 0 1px 4px rgba(0,0,0,0.04);
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
     overflow: hidden;
 }
 
-.sensor-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--bayangan-hover);
+/* Subtle top-right decorative glow per status */
+.sensor-card::after {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    opacity: 0.06;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
+.sensor-card.aman::after  { background-color: var(--hijau-aman); }
+.sensor-card.waspada::after { background-color: var(--kuning-waspada); }
+.sensor-card.bahaya::after  { background-color: var(--merah-bahaya); }
+
+.sensor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(10, 79, 110, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+}
+.sensor-card:hover::after { opacity: 0.12; }
 
 .sensor-card.aman { border-left-color: var(--hijau-aman); }
 .sensor-card.waspada { border-left-color: var(--kuning-waspada); }
@@ -401,13 +421,16 @@ button:focus, a:focus {
 
 .card-badge {
     font-family: var(--font-number);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 4px;
+    padding: 5px 14px;
+    border-radius: 50px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     color: var(--putih-bersih);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .card-badge.aman { background-color: var(--hijau-aman); }
@@ -467,10 +490,14 @@ button:focus, a:focus {
 
 .metric-number {
     font-family: var(--font-number);
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: 700;
-    color: var(--biru-bogor);
+    background: linear-gradient(135deg, var(--biru-bogor) 0%, #1a7fa0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1;
+    transition: all 0.4s ease;
 }
 
 .metric-unit {
@@ -544,9 +571,14 @@ button:focus, a:focus {
     transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1);
 }
 
-.progress-safe { background: linear-gradient(90deg, #1A8C3E, #2ecc71); }
-.progress-waspada { background: linear-gradient(90deg, #f39c12, #D4860A); }
-.progress-bahaya { background: linear-gradient(90deg, #e74c3c, #C0271B); animation: pulse-bg-danger 2s infinite; }
+.progress-safe    { background: linear-gradient(90deg, #17a34a, #2ecc71); }
+.progress-waspada { background: linear-gradient(90deg, #d97706, #f59e0b); }
+.progress-bahaya  { background: linear-gradient(90deg, #b91c1c, #ef4444); animation: pulse-progress-danger 2s infinite; }
+
+@keyframes pulse-progress-danger {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+}
 
 /* 3 Steps Section (Cara Kerja) */
 .steps-container {
@@ -882,10 +914,17 @@ button:focus, a:focus {
 .stat-box {
     background-color: var(--putih-bersih);
     border: 1px solid var(--abu-muda);
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: var(--bayangan-halus);
+    border-radius: 14px;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 0 2px 12px rgba(10, 79, 110, 0.06);
     text-align: center;
+    transition: all 0.25s ease;
+    border-top: 4px solid var(--biru-bogor);
+}
+
+.stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(10, 79, 110, 0.12);
 }
 
 .stat-number {
@@ -928,11 +967,11 @@ button:focus, a:focus {
 
 /* Chart Container & Panel styles */
 .chart-panel-card {
-    background-color: var(--putih-bersih);
+    background: linear-gradient(145deg, #ffffff 0%, #fafbff 100%);
     border: 1px solid var(--abu-muda);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 2rem;
-    box-shadow: var(--bayangan-halus);
+    box-shadow: 0 4px 24px rgba(10, 79, 110, 0.08);
     margin-top: 2rem;
 }
 

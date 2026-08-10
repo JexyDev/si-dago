@@ -35,16 +35,17 @@ const MAX_LEVEL = 20.0;     // cm
 let lastDataTime = 0;
 let currentStatusState = "aman"; // 'aman', 'waspada', 'bahaya'
 
+// Offline jika tidak ada data lebih dari 20 detik (ESP32 kirim tiap ~30 detik)
 setInterval(() => {
     const now = Date.now();
-    if (lastDataTime === 0 || (now - lastDataTime > 5000)) {
+    if (lastDataTime === 0 || (now - lastDataTime > 20000)) {
         sensorDot.classList.remove('connected');
         sensorText.innerText = "Sensor: Offline";
     } else {
         sensorDot.classList.add('connected');
         sensorText.innerText = "Sensor: Online";
     }
-}, 2000);
+}, 3000);
 
 // Chart.js Setup
 const ctx = document.getElementById('waterChart');
@@ -83,9 +84,10 @@ if (ctx) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 20,
+                    max: 22,
                     ticks: {
-                        stepSize: 5
+                        stepSize: 2,
+                        callback: (val) => val + ' cm'
                     },
                     grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
@@ -98,8 +100,45 @@ if (ctx) {
                 }
             },
             plugins: {
-                legend: {
-                    display: false
+                legend: { display: false },
+                // Garis ambang batas WASPADA (10cm) & BAHAYA (16cm)
+                annotation: {
+                    annotations: {
+                        lineWaspada: {
+                            type: 'line',
+                            yMin: 10,
+                            yMax: 10,
+                            borderColor: '#D4860A',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: '⚠ Batas WASPADA (10 cm)',
+                                position: 'start',
+                                color: '#D4860A',
+                                font: { size: 11, weight: 'bold' },
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                padding: { x: 6, y: 3 }
+                            }
+                        },
+                        lineBahaya: {
+                            type: 'line',
+                            yMin: 16,
+                            yMax: 16,
+                            borderColor: '#C0271B',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: '🔴 Batas BAHAYA (16 cm)',
+                                position: 'start',
+                                color: '#C0271B',
+                                font: { size: 11, weight: 'bold' },
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                padding: { x: 6, y: 3 }
+                            }
+                        }
+                    }
                 }
             }
         }
