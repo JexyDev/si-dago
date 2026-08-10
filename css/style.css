@@ -632,14 +632,13 @@ button:focus, a:focus {
     color: #555;
 }
 
-/* Telegram Ribbon Section */
+/* Telegram Ribbon Section - Modern Soft Slate Theme */
 .telegram-ribbon {
-    background-color: var(--biru-bogor);
+    background: linear-gradient(135deg, #0f2937 0%, #1e3a8a 100%);
     color: var(--putih-bersih);
     padding: 4.5rem 1.5rem;
     position: relative;
     overflow: hidden;
-    border-top: 4px solid var(--emas-bogor);
 }
 
 .telegram-container {
@@ -662,9 +661,9 @@ button:focus, a:focus {
 }
 
 .telegram-text p {
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 1.75rem;
 }
 
 .telegram-benefits {
@@ -678,36 +677,36 @@ button:focus, a:focus {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
 }
 
 .telegram-benefits li i {
-    color: var(--emas-bogor);
+    color: #34d399;
     font-size: 1.3rem;
 }
 
 .telegram-cta {
-    background-color: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    padding: 2.2rem;
+    padding: 2rem;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(8px);
 }
 
 .qr-box {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     background-color: var(--putih-bersih);
-    border-radius: 8px;
+    border-radius: 12px;
     margin: 0 auto 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .qr-box img {
@@ -718,16 +717,16 @@ button:focus, a:focus {
 .telegram-cta span {
     display: block;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem;
 }
 
-/* Footer Section */
+/* Footer Section - Clean Modern Light Footer */
 .footer {
-    background-color: #081d28;
-    color: rgba(255,255,255,0.75);
-    padding: 5rem 1.5rem 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    background-color: #ffffff;
+    color: #475569;
+    padding: 4.5rem 1.5rem 0;
+    border-top: 1px solid var(--abu-muda);
 }
 
 .footer-container {
@@ -736,14 +735,14 @@ button:focus, a:focus {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1.2fr;
     gap: 4rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
 }
 
 .footer-col h3 {
     font-family: var(--font-heading);
-    font-size: 1.4rem;
-    color: var(--putih-bersih);
-    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    color: var(--biru-bogor);
+    margin-bottom: 1.25rem;
     font-weight: 700;
 }
 
@@ -752,36 +751,37 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: var(--putih-bersih);
-    margin-bottom: 1.25rem;
+    color: var(--biru-bogor);
+    margin-bottom: 1rem;
 }
 
 .footer-about .footer-logo h2 {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .footer-about .footer-logo i {
     font-size: 2rem;
-    color: var(--emas-bogor);
+    color: var(--hijau-aman);
 }
 
 .footer-about p {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 0.85rem;
+    color: #64748b;
 }
 
 .footer-links-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.75rem;
 }
 
 .footer-links-list a {
-    color: rgba(255,255,255,0.7);
+    color: #475569;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
@@ -789,14 +789,14 @@ button:focus, a:focus {
 }
 
 .footer-links-list a:hover {
-    color: var(--emas-bogor);
+    color: var(--hijau-aman);
 }
 
 .footer-contact-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.75rem;
 }
 
 .footer-contact-list li {
@@ -804,6 +804,7 @@ button:focus, a:focus {
     align-items: flex-start;
     gap: 0.75rem;
     font-size: 0.95rem;
+    color: #475569;
 }
 
 .footer-contact-list i {
@@ -813,13 +814,14 @@ button:focus, a:focus {
 }
 
 .footer-bottom-bar {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--abu-muda);
+    padding: 1.75rem 1.5rem;
     text-align: center;
-    background-color: #05141c;
+    background-color: #f8fafc;
     margin: 0 -1.5rem;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.5);
+    color: #64748b;
+    font-weight: 500;
 }
 
 .footer-bottom-bar p {
