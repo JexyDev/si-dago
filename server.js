@@ -75,12 +75,17 @@ function kirimTelegram(text, targetChatId = null) {
     });
 }
 
+let isPolling = false;
+
 /**
  * Polling otomatis Telegram getUpdates.
  * Memeriksa siapa saja pengguna yang menekan /start atau mengirim chat ke bot,
  * lalu mendaftarkan Chat ID-nya secara otomatis tanpa perlu hardcode ID!
  */
 function pollTelegramUpdates() {
+    if (isPolling) return;
+    isPolling = true;
+
     const options = {
         hostname: 'api.telegram.org',
         path: `/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`,
@@ -91,6 +96,7 @@ function pollTelegramUpdates() {
         let data = '';
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
+            isPolling = false;
             try {
                 const parsed = JSON.parse(data);
                 if (parsed.ok && Array.isArray(parsed.result)) {
@@ -99,12 +105,12 @@ function pollTelegramUpdates() {
                         if (update.message && update.message.chat) {
                             const chatId = String(update.message.chat.id);
                             const senderName = update.message.from ? update.message.from.first_name : 'Warga';
-                            const text = (update.message.text || '').trim();
-                            const isNew = !telegramSubscribers.has(chatId);
+                            const text = (update.message.text || '').trim().toLowerCase();
 
+                            const isNew = !telegramSubscribers.has(chatId);
                             telegramSubscribers.add(chatId);
 
-                            if (isNew || text.startsWith('/start') || text.startsWith('/mulai') || text.toLowerCase() === 'start') {
+                            if (text.startsWith('/start') || text.startsWith('/mulai') || text === 'start') {
                                 console.log(`📲 Subscriber Telegram aktif: ${senderName} (ID: ${chatId})`);
                                 const replyMsg = `✅ *Selamat Datang, ${senderName}!*
 
@@ -116,7 +122,6 @@ Sistem *SI DAGO Kota Bogor* berhasil terhubung dengan Telegram Anda.
 Anda akan menerima notifikasi darurat secara otomatis di sini jika sensor mendeteksi potensi luapan selokan atau penyumbatan sampah.`;
                                 kirimTelegram(replyMsg, chatId);
                             }
-
                         }
                     });
                 }
@@ -126,13 +131,16 @@ Anda akan menerima notifikasi darurat secara otomatis di sini jika sensor mendet
         });
     });
 
-    req.on('error', () => {});
+    req.on('error', () => {
+        isPolling = false;
+    });
     req.end();
 }
 
 // Jalankan polling setiap 5 detik untuk mendeteksi user baru yang klik /start
 setInterval(pollTelegramUpdates, 5000);
 pollTelegramUpdates();
+
 
 
 /**
