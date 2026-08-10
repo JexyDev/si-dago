@@ -74,7 +74,7 @@ function kirimTelegramPeringatan(tinggiAir, kondisiHujan, adaSampah, status) {
 
     const pesan = `${statusEmoji} *[SI DAGO] PERINGATAN ${statusText}*
 
-📍 *Lokasi:* Selokan Pasar Mawar (Jl. Merdeka)
+📍 *Lokasi:* Drainase Utama SMK Wikrama Bogor (Jl. Raya Wangun)
 💧 *Ketinggian Air:* ${tinggiAir.toFixed(1)} cm
 🌧️ *Kondisi Hujan:* ${kondisiHujan}
 🗑️ *Gorong-gorong:* ${adaSampah ? 'Tersumbat Sampah!' : 'Lancar / Bersih'}
@@ -175,7 +175,7 @@ app.post('/api/data', (req, res) => {
         isFirstDataReceived = true;
         const pesanNyala = `🟢 *[SI DAGO] PERANGKAT SENSOR AKTIF*
 
-📍 *Lokasi:* Selokan Pasar Mawar (Jl. Merdeka)
+📍 *Lokasi:* Drainase Utama SMK Wikrama Bogor (Jl. Raya Wangun)
 📡 *Status:* Perangkat ESP32 berhasil terhubung & mulai mengirim data realtime.
 💧 *Pembacaan Awal:* ${parsedTinggi.toFixed(1)} cm | Hujan: ${parsedHujan}
 
