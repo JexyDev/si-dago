@@ -297,12 +297,21 @@ function generateHistoricalData() {
     }
 
     return data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-}
-
 let telemetryHistory = generateHistoricalData();
 
-// ============================================================
-// API: TERIMA DATA DARI IoT (ESP32)
+// Data sensor realtime terbaru (diinisialisasi dari riwayat terbatu agar tidak 0.0 cm saat web dibuka)
+let currentData = {
+    tinggiAir: telemetryHistory[0].tinggiAir,
+    kondisiHujan: telemetryHistory[0].kondisiHujan,
+    adaSampah: telemetryHistory[0].adaSampah,
+    timestamp: telemetryHistory[0].timestamp
+};
+
+// GET /api/latest — Ambil data sensor live terbaru
+app.get('/api/latest', (req, res) => {
+    res.json(currentData);
+});
+
 // POST /api/data
 // Body (JSON atau form-data):
 //   tinggiAir   — number (cm), wajib

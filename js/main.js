@@ -404,8 +404,20 @@ function setupFilters() {
 
 // Start connection on load
 window.addEventListener('DOMContentLoaded', () => {
-    // Initial Setup
-    updateUI(0, "CERAH", false);
+    // 1. Ambil data sensor terbaru dari server agar beranda langsung menampilkan data real
+    fetch('/api/latest')
+        .then(res => res.json())
+        .then(data => {
+            if (data && typeof data.tinggiAir === 'number') {
+                updateUI(data.tinggiAir, data.kondisiHujan || "Cerah", !!data.adaSampah);
+            }
+        })
+        .catch(() => {
+            updateUI(0, "CERAH", false);
+        });
+
+    // 2. Hubungkan ke WebSocket untuk memperbarui data secara realtime
     connectSiDago();
     setupFilters();
 });
+
