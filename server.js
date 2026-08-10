@@ -93,15 +93,21 @@ _Pesan otomatis dari Server SI DAGO Kota Bogor • ${new Date().toLocaleTimeStri
 let lastNotifStatus   = "aman";
 let lastNotifSentTime = 0;
 const NOTIF_COOLDOWN  = 5 * 60 * 1000; // 5 menit cooldown antar notifikasi
-const WARNING_LEVEL   = 10.0;           // cm — WASPADA
-const DANGER_LEVEL    = 16.0;           // cm — BAHAYA
+// Skor Risiko 0 - 100 sesuai Proposal BIA 2026 (Gambar 2.1 Flowchart):
+// 0 - 44   : AMAN
+// 45 - 75  : WASPADA
+// 76 - 100 : BAHAYA
+function calculateRiskScore(tinggiAir, adaSampah, kondisiHujan) {
+    let score = Math.round((tinggiAir / 20.0) * 70); // Ketinggian air (max 20cm) kontribusi max 70 poin
+    if (adaSampah) score += 20;                     // Penyumbatan sampah (infrared FC-51) +20 poin
+    if (kondisiHujan && kondisiHujan.toLowerCase() !== 'cerah') score += 10; // Hujan +10 poin
+    return Math.min(Math.max(score, 0), 100);
+}
 
-function getStatus(tinggiAir, adaSampah) {
-    if (tinggiAir >= DANGER_LEVEL || (adaSampah && tinggiAir >= WARNING_LEVEL)) {
-        return "bahaya";
-    } else if (tinggiAir >= WARNING_LEVEL || adaSampah) {
-        return "waspada";
-    }
+function getStatus(tinggiAir, adaSampah, kondisiHujan) {
+    const score = calculateRiskScore(tinggiAir, adaSampah, kondisiHujan);
+    if (score >= 76) return "bahaya";
+    if (score >= 45) return "waspada";
     return "aman";
 }
 
@@ -164,7 +170,7 @@ app.post('/api/data', (req, res) => {
     console.log(`✅ Data diproses & disiarkan: Air=${parsedTinggi}cm | Hujan=${parsedHujan} | Sampah=${parsedSampah}`);
 
     // Evaluasi status & kirim notifikasi Telegram jika perlu
-    const currentStatus = getStatus(parsedTinggi, parsedSampah);
+    const currentStatus = getStatus(parsedTinggi, parsedSampah, parsedHujan);
     const timeNow = Date.now();
 
     if (currentStatus !== "aman") {

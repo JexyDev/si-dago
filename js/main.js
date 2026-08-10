@@ -184,11 +184,12 @@ function appendEventLog(location, detail, trashState, statusType) {
     }
 }
 
-// Calculate Risk Score
-function calculateRisk(tinggiAir, adaSampah) {
-    let risk = Math.round((tinggiAir / MAX_LEVEL) * 100);
-    if (adaSampah) risk += 15; // Obstruction hazard bonus
-    return Math.min(risk, 100);
+// Calculate Risk Score (0 - 100) per Proposal BIA 2026 (Gambar 2.1)
+function calculateRisk(tinggiAir, adaSampah, kondisiHujan) {
+    let score = Math.round((tinggiAir / MAX_LEVEL) * 70); // Ketinggian air (max 20cm) kontribusi max 70%
+    if (adaSampah) score += 20;                           // Penyumbatan sampah (infrared FC-51) +20%
+    if (kondisiHujan && kondisiHujan.toLowerCase() !== 'cerah') score += 10; // Hujan +10%
+    return Math.min(Math.max(score, 0), 100);
 }
 
 // Update UI on Data Received
@@ -201,21 +202,20 @@ function updateUI(tinggiAir, kondisiHujan, adaSampah) {
     }
 
     // 2. Calculate and Display Risk
-    const riskScore = calculateRisk(tinggiAir, adaSampah);
+    const riskScore = calculateRisk(tinggiAir, adaSampah, kondisiHujan);
     if (liveRiskPct) {
         liveRiskPct.innerText = riskScore + "%";
     }
 
     // 3. Update Progress Bar
     if (waterBarEl) {
-        const heightPercentage = Math.min((tinggiAir / MAX_LEVEL) * 100, 100);
-        waterBarEl.style.width = heightPercentage + '%';
+        waterBarEl.style.width = Math.min(riskScore, 100) + '%';
         
         // Remove old classes
         waterBarEl.className = "custom-progress-bar";
-        if (tinggiAir >= DANGER_LEVEL || (adaSampah && tinggiAir >= WARNING_LEVEL)) {
+        if (riskScore >= 76) {
             waterBarEl.classList.add("progress-bahaya");
-        } else if (tinggiAir >= WARNING_LEVEL || adaSampah) {
+        } else if (riskScore >= 45) {
             waterBarEl.classList.add("progress-waspada");
         } else {
             waterBarEl.classList.add("progress-safe");
@@ -239,13 +239,13 @@ function updateUI(tinggiAir, kondisiHujan, adaSampah) {
         trashStatusEl.innerText = trashText;
     }
 
-    // 6. State Determination and Styling
+    // 6. State Determination and Styling (Proposal BIA 2026: 0-44 Aman, 45-75 Waspada, 76-100 Bahaya)
     let prevStatus = currentStatusState;
     let newStatus = "aman";
 
-    if (tinggiAir >= DANGER_LEVEL || (adaSampah && tinggiAir >= WARNING_LEVEL)) {
+    if (riskScore >= 76) {
         newStatus = "bahaya";
-    } else if (tinggiAir >= WARNING_LEVEL || adaSampah) {
+    } else if (riskScore >= 45) {
         newStatus = "waspada";
     }
 
