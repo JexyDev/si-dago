@@ -21,6 +21,13 @@ const topStatusBar = document.getElementById('top-status-bar');
 const topStatusText = document.getElementById('top-status-text');
 const eventLogTbody = document.getElementById('event-log-tbody');
 
+// Hero Home Page Elements (index.html)
+const heroStatusBox = document.getElementById('hero-status-box');
+const heroStatusText = document.getElementById('hero-status-text');
+const heroWaterVal = document.getElementById('hero-water-val');
+const heroRainVal = document.getElementById('hero-rain-val');
+const heroTrashVal = document.getElementById('hero-trash-val');
+
 // Stats Counters Elements
 const statsAmanCount = document.getElementById('stats-aman-count');
 const statsWaspadaCount = document.getElementById('stats-waspada-count');
@@ -35,16 +42,17 @@ const MAX_LEVEL = 20.0;     // cm
 let lastDataTime = 0;
 let currentStatusState = "aman"; // 'aman', 'waspada', 'bahaya'
 
+// Offline jika tidak ada data lebih dari 20 detik (ESP32 kirim tiap ~30 detik)
 setInterval(() => {
     const now = Date.now();
-    if (lastDataTime === 0 || (now - lastDataTime > 5000)) {
+    if (lastDataTime === 0 || (now - lastDataTime > 20000)) {
         sensorDot.classList.remove('connected');
         sensorText.innerText = "Sensor: Offline";
     } else {
         sensorDot.classList.add('connected');
         sensorText.innerText = "Sensor: Online";
     }
-}, 2000);
+}, 3000);
 
 // Chart.js Setup
 const ctx = document.getElementById('waterChart');
@@ -83,9 +91,10 @@ if (ctx) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 20,
+                    max: 22,
                     ticks: {
-                        stepSize: 5
+                        stepSize: 2,
+                        callback: (val) => val + ' cm'
                     },
                     grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
@@ -98,8 +107,45 @@ if (ctx) {
                 }
             },
             plugins: {
-                legend: {
-                    display: false
+                legend: { display: false },
+                // Garis ambang batas WASPADA (10cm) & BAHAYA (16cm)
+                annotation: {
+                    annotations: {
+                        lineWaspada: {
+                            type: 'line',
+                            yMin: 10,
+                            yMax: 10,
+                            borderColor: '#D4860A',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: '⚠ Batas WASPADA (10 cm)',
+                                position: 'start',
+                                color: '#D4860A',
+                                font: { size: 11, weight: 'bold' },
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                padding: { x: 6, y: 3 }
+                            }
+                        },
+                        lineBahaya: {
+                            type: 'line',
+                            yMin: 16,
+                            yMax: 16,
+                            borderColor: '#C0271B',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: '🔴 Batas BAHAYA (16 cm)',
+                                position: 'start',
+                                color: '#C0271B',
+                                font: { size: 11, weight: 'bold' },
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                padding: { x: 6, y: 3 }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -145,11 +191,12 @@ function appendEventLog(location, detail, trashState, statusType) {
     }
 }
 
-// Calculate Risk Score
-function calculateRisk(tinggiAir, adaSampah) {
-    let risk = Math.round((tinggiAir / MAX_LEVEL) * 100);
-    if (adaSampah) risk += 15; // Obstruction hazard bonus
-    return Math.min(risk, 100);
+// Calculate Risk Score (0 - 100) per Proposal BIA 2026 (Gambar 2.1)
+function calculateRisk(tinggiAir, adaSampah, kondisiHujan) {
+    let score = Math.round((tinggiAir / MAX_LEVEL) * 70); // Ketinggian air (max 20cm) kontribusi max 70%
+    if (adaSampah) score += 20;                           // Penyumbatan sampah (infrared FC-51) +20%
+    if (kondisiHujan && kondisiHujan.toLowerCase() !== 'cerah') score += 10; // Hujan +10%
+    return Math.min(Math.max(score, 0), 100);
 }
 
 // Update UI on Data Received
@@ -162,21 +209,20 @@ function updateUI(tinggiAir, kondisiHujan, adaSampah) {
     }
 
     // 2. Calculate and Display Risk
-    const riskScore = calculateRisk(tinggiAir, adaSampah);
+    const riskScore = calculateRisk(tinggiAir, adaSampah, kondisiHujan);
     if (liveRiskPct) {
         liveRiskPct.innerText = riskScore + "%";
     }
 
     // 3. Update Progress Bar
     if (waterBarEl) {
-        const heightPercentage = Math.min((tinggiAir / MAX_LEVEL) * 100, 100);
-        waterBarEl.style.width = heightPercentage + '%';
+        waterBarEl.style.width = Math.min(riskScore, 100) + '%';
         
         // Remove old classes
         waterBarEl.className = "custom-progress-bar";
-        if (tinggiAir >= DANGER_LEVEL || (adaSampah && tinggiAir >= WARNING_LEVEL)) {
+        if (riskScore >= 76) {
             waterBarEl.classList.add("progress-bahaya");
-        } else if (tinggiAir >= WARNING_LEVEL || adaSampah) {
+        } else if (riskScore >= 45) {
             waterBarEl.classList.add("progress-waspada");
         } else {
             waterBarEl.classList.add("progress-safe");
@@ -200,17 +246,29 @@ function updateUI(tinggiAir, kondisiHujan, adaSampah) {
         trashStatusEl.innerText = trashText;
     }
 
-    // 6. State Determination and Styling
+    // 6. State Determination and Styling (Proposal BIA 2026: 0-44 Aman, 45-75 Waspada, 76-100 Bahaya)
     let prevStatus = currentStatusState;
     let newStatus = "aman";
 
-    if (tinggiAir >= DANGER_LEVEL || (adaSampah && tinggiAir >= WARNING_LEVEL)) {
+    if (riskScore >= 76) {
         newStatus = "bahaya";
-    } else if (tinggiAir >= WARNING_LEVEL || adaSampah) {
+    } else if (riskScore >= 45) {
         newStatus = "waspada";
     }
 
     currentStatusState = newStatus;
+
+    // Update Hero elements on index.html if present
+    if (heroWaterVal) heroWaterVal.innerText = tinggiAir.toFixed(1) + " cm";
+    if (heroRainVal) heroRainVal.innerText = kondisiHujan;
+    if (heroTrashVal) {
+        heroTrashVal.innerText = trashText;
+        heroTrashVal.style.color = adaSampah ? "var(--merah-bahaya)" : "var(--hijau-aman)";
+    }
+    if (heroStatusBox && heroStatusText) {
+        heroStatusBox.className = "hero-status-box " + (newStatus === "bahaya" ? "status-bahaya" : newStatus === "waspada" ? "status-waspada" : "status-aman");
+        heroStatusText.innerText = newStatus === "bahaya" ? "🔴 BAHAYA" : newStatus === "waspada" ? "🟡 WASPADA" : "🟢 AMAN";
+    }
 
     // Apply main styles based on status
     if (alertCardEl && liveCardBadge && statusTitleEl && statusDescEl) {
@@ -315,9 +373,39 @@ function connectSiDago() {
     });
 }
 
+// Sidebar Filter Handling
+function setupFilters() {
+    const filterKecamatan = document.getElementById('filter-kecamatan');
+    const filterStatus = document.getElementById('filter-status');
+
+    if (!filterKecamatan || !filterStatus) return;
+
+    function applyFilter() {
+        const selectedKec = filterKecamatan.value;
+        const selectedStat = filterStatus.value;
+        const cards = document.querySelectorAll('.dashboard-content-area .sensor-card');
+
+        cards.forEach(card => {
+            const cardKec = card.getAttribute('data-kecamatan') || 'tengah';
+            let cardStat = 'aman';
+            if (card.classList.contains('waspada')) cardStat = 'waspada';
+            if (card.classList.contains('bahaya')) cardStat = 'bahaya';
+
+            const matchKec = (selectedKec === 'semua' || cardKec === selectedKec);
+            const matchStat = (selectedStat === 'semua' || cardStat === selectedStat);
+
+            card.style.display = (matchKec && matchStat) ? '' : 'none';
+        });
+    }
+
+    filterKecamatan.addEventListener('change', applyFilter);
+    filterStatus.addEventListener('change', applyFilter);
+}
+
 // Start connection on load
 window.addEventListener('DOMContentLoaded', () => {
     // Initial Setup
     updateUI(0, "CERAH", false);
     connectSiDago();
+    setupFilters();
 });

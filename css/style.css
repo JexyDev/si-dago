@@ -3,28 +3,28 @@
    Bogor City Smart Flood Monitoring Theme
    ============================================================ */
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,300..900;1,300..900&family=Oswald:wght@500;700&display=swap');
+/* Import Google Fonts: Plus Jakarta Sans (Body), Outfit (Headings), Oswald (Numbers) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=Oswald:wght@500;700&display=swap');
 
 :root {
-    /* Color Palette */
-    --biru-bogor: #0a4f6e;       /* Biru teal gelap — air bersih */
-    --emas-bogor: #C8860A;       /* Emas hangat — Kujang Bogor */
-    --hijau-aman: #1A8C3E;       /* Hijau solid — status AMAN */
-    --kuning-waspada: #D4860A;   /* Kuning tua — status WASPADA */
-    --merah-bahaya: #C0271B;     /* Merah solid — status BAHAYA */
-    --krem-latar: #F5F0E8;       /* Krem hangat — koran/papan kelurahan */
-    --abu-teks: #2C2C2C;         /* Teks utama — kontras tinggi */
-    --abu-muda: #EAE3D2;         /* Abu-abu hangat untuk border */
+    /* Natural Slate & City Color Palette */
+    --biru-bogor: #0F2937;       /* Deep Slate Navy — Bogor smart city */
+    --emas-bogor: #D97706;       /* Warm Accent Gold — Kujang Bogor */
+    --hijau-aman: #059669;       /* Emerald Green — AMAN */
+    --kuning-waspada: #D97706;   /* Warm Amber — WASPADA */
+    --merah-bahaya: #DC2626;     /* Crimson Red — BAHAYA */
+    --krem-latar: #F8FAFC;       /* Natural Light Slate Background */
+    --abu-teks: #0F172A;         /* Slate 900 Text — High Contrast */
+    --abu-muda: #E2E8F0;         /* Clean Slate 200 Border */
     --putih-bersih: #FFFFFF;
     
-    /* Glow/Shadow States */
-    --bayangan-halus: 0 4px 16px rgba(10, 79, 110, 0.08);
-    --bayangan-hover: 0 12px 28px rgba(10, 79, 110, 0.15);
+    /* Clean Natural Shadows */
+    --bayangan-halus: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 16px rgba(15, 23, 42, 0.03);
+    --bayangan-hover: 0 10px 30px rgba(15, 23, 42, 0.08);
     
-    /* Fonts configuration */
-    --font-heading: 'Lora', serif;
-    --font-body: 'Nunito', sans-serif;
+    /* Modern Fonts Configuration */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
     --font-number: 'Oswald', sans-serif;
 }
 
@@ -81,14 +81,15 @@ button:focus, a:focus {
 .top-status-bar.status-bahaya { background-color: var(--merah-bahaya); animation: pulse-bg-danger 2s infinite; }
 
 .navbar {
-    background-color: var(--biru-bogor);
-    color: var(--putih-bersih);
+    background-color: #ffffff;
+    color: var(--abu-teks);
     position: sticky;
     top: 0;
     width: 100%;
     height: 75px;
     z-index: 999;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
+    border-bottom: 1px solid var(--abu-muda);
     display: flex;
     align-items: center;
     transition: height 0.3s ease;
@@ -109,23 +110,32 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
-    color: var(--putih-bersih);
+    color: var(--abu-teks);
 }
 
-.brand i {
-    font-size: 2.2rem;
-    color: var(--emas-bogor);
+.brand-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0, 136, 255, 0.25));
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+
+.brand:hover .brand-logo {
+    transform: scale(1.1) rotate(-3deg);
+    filter: drop-shadow(0 4px 14px rgba(0, 136, 255, 0.5));
 }
 
 .brand-text h1 {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.1;
+    color: var(--biru-bogor);
 }
 
 .brand-text span {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-family: var(--font-body);
     font-weight: 700;
     letter-spacing: 1px;
@@ -136,24 +146,25 @@ button:focus, a:focus {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 1.25rem;
     align-items: center;
 }
 
 .nav-link {
-    color: var(--putih-bersih);
+    color: #475569;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
     transition: all 0.2s ease;
     border-bottom: 2px solid transparent;
 }
 
 .nav-link:hover, .nav-link.active {
-    color: var(--emas-bogor);
-    border-bottom-color: var(--emas-bogor);
+    color: var(--hijau-aman);
+    border-bottom-color: var(--hijau-aman);
+    background-color: rgba(5, 150, 105, 0.08);
 }
 
 .nav-toggle {
@@ -161,19 +172,19 @@ button:focus, a:focus {
     font-size: 1.8rem;
     background: none;
     border: none;
-    color: var(--putih-bersih);
+    color: var(--abu-teks);
     cursor: pointer;
     padding: 0.5rem;
 }
 
-/* Hero Section */
+/* Hero Section - Bright Modern Light Theme */
 .hero {
     position: relative;
-    background: linear-gradient(135deg, #052c3e 0%, #0c425c 100%);
-    color: var(--putih-bersih);
-    padding: 4rem 1.5rem 6rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    color: var(--abu-teks);
+    padding: 4.5rem 1.5rem 4.5rem;
     text-align: center;
-    overflow: hidden;
+    border-bottom: 1px solid var(--abu-muda);
 }
 
 .hero-content {
@@ -185,78 +196,85 @@ button:focus, a:focus {
 
 .hero-label {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: 2px;
     color: var(--emas-bogor);
     text-transform: uppercase;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    background-color: rgba(217, 119, 6, 0.08);
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 50px;
+    border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 .hero-status-box {
     display: inline-block;
-    padding: 1.5rem 4rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 1.25rem 3.5rem;
+    border-radius: 50px;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .hero-status-box.status-aman {
-    background-color: var(--hijau-aman);
-    border: 3px solid rgba(255,255,255,0.2);
+    background-color: #ecfdf5;
+    border: 2px solid #a7f3d0;
+    color: #065f46;
 }
 
 .hero-status-box.status-waspada {
-    background-color: var(--kuning-waspada);
-    border: 3px solid rgba(255,255,255,0.2);
+    background-color: #fffbeb;
+    border: 2px solid #fde68a;
+    color: #92400e;
     animation: pulse-border-waspada 2s infinite;
 }
 
 .hero-status-box.status-bahaya {
-    background-color: var(--merah-bahaya);
-    border: 3px solid rgba(255,255,255,0.4);
+    background-color: #fef2f2;
+    border: 2px solid #fecaca;
+    color: #991b1b;
     animation: blink-border-danger 1.5s infinite;
 }
 
 .hero-status-text {
     font-family: var(--font-number);
-    font-size: 4.5rem;
+    font-size: 3.5rem;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     line-height: 1;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 2.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    color: var(--biru-bogor);
+    margin-bottom: 0.75rem;
     font-weight: 700;
+    line-height: 1.25;
 }
 
 .hero-subtitle {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 2rem;
+    color: #475569;
+    margin-bottom: 2.25rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
 }
 
 .hero-buttons {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
 }
 
-/* Gunung Salak Silhouette SVG overlay */
+/* Salak silhouette disabled in modern light mode */
 .salak-silhouette {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    z-index: 2;
-    pointer-events: none;
+    display: none;
 }
 
 /* UI Elements & Buttons */
@@ -280,22 +298,25 @@ button:focus, a:focus {
 .btn-primary {
     background-color: var(--emas-bogor);
     color: var(--putih-bersih);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
 }
 
 .btn-primary:hover {
-    background-color: #a06a08;
+    background-color: #b45309;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(200, 134, 10, 0.4);
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
 }
 
 .btn-secondary {
-    background-color: transparent;
-    color: var(--putih-bersih);
-    border: 2px solid var(--putih-bersih);
+    background-color: var(--putih-bersih);
+    color: var(--biru-bogor);
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .btn-secondary:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: #f8fafc;
+    border-color: #94a3b8;
     transform: translateY(-2px);
 }
 
@@ -375,17 +396,16 @@ button:focus, a:focus {
     background-color: var(--putih-bersih);
     border-radius: 12px;
     border: 1px solid var(--abu-muda);
-    border-left: 6px solid var(--hijau-aman); /* Default left border */
-    padding: 1.75rem;
-    box-shadow: var(--bayangan-halus);
-    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-left: 5px solid var(--hijau-aman);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.02);
+    transition: all 0.25s ease-in-out;
     position: relative;
-    overflow: hidden;
 }
 
 .sensor-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--bayangan-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
 }
 
 .sensor-card.aman { border-left-color: var(--hijau-aman); }
@@ -401,13 +421,16 @@ button:focus, a:focus {
 
 .card-badge {
     font-family: var(--font-number);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 4px;
+    padding: 4px 12px;
+    border-radius: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--putih-bersih);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .card-badge.aman { background-color: var(--hijau-aman); }
@@ -416,8 +439,8 @@ button:focus, a:focus {
 
 .card-time {
     font-size: 0.8rem;
-    color: #777;
-    font-weight: 700;
+    color: #64748b;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -425,7 +448,7 @@ button:focus, a:focus {
 
 .card-location {
     font-family: var(--font-heading);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     color: var(--biru-bogor);
     font-weight: 700;
     margin-bottom: 0.25rem;
@@ -433,14 +456,14 @@ button:focus, a:focus {
 
 .card-sublocation {
     font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
 }
 
 /* Metric Display Container */
 .card-metrics-box {
-    background-color: var(--krem-latar);
+    background-color: #f8fafc;
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin-bottom: 1.25rem;
@@ -448,9 +471,9 @@ button:focus, a:focus {
 }
 
 .metric-label {
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: #555;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: flex;
@@ -467,7 +490,7 @@ button:focus, a:focus {
 
 .metric-number {
     font-family: var(--font-number);
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: 700;
     color: var(--biru-bogor);
     line-height: 1;
@@ -544,9 +567,14 @@ button:focus, a:focus {
     transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1);
 }
 
-.progress-safe { background: linear-gradient(90deg, #1A8C3E, #2ecc71); }
-.progress-waspada { background: linear-gradient(90deg, #f39c12, #D4860A); }
-.progress-bahaya { background: linear-gradient(90deg, #e74c3c, #C0271B); animation: pulse-bg-danger 2s infinite; }
+.progress-safe    { background: linear-gradient(90deg, #17a34a, #2ecc71); }
+.progress-waspada { background: linear-gradient(90deg, #d97706, #f59e0b); }
+.progress-bahaya  { background: linear-gradient(90deg, #b91c1c, #ef4444); animation: pulse-progress-danger 2s infinite; }
+
+@keyframes pulse-progress-danger {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+}
 
 /* 3 Steps Section (Cara Kerja) */
 .steps-container {
@@ -612,14 +640,13 @@ button:focus, a:focus {
     color: #555;
 }
 
-/* Telegram Ribbon Section */
+/* Telegram Ribbon Section - Modern Soft Slate Theme */
 .telegram-ribbon {
-    background-color: var(--biru-bogor);
+    background: linear-gradient(135deg, #0f2937 0%, #1e3a8a 100%);
     color: var(--putih-bersih);
     padding: 4.5rem 1.5rem;
     position: relative;
     overflow: hidden;
-    border-top: 4px solid var(--emas-bogor);
 }
 
 .telegram-container {
@@ -642,9 +669,9 @@ button:focus, a:focus {
 }
 
 .telegram-text p {
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 1.75rem;
 }
 
 .telegram-benefits {
@@ -658,36 +685,36 @@ button:focus, a:focus {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
 }
 
 .telegram-benefits li i {
-    color: var(--emas-bogor);
+    color: #34d399;
     font-size: 1.3rem;
 }
 
 .telegram-cta {
-    background-color: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    padding: 2.2rem;
+    padding: 2rem;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(8px);
 }
 
 .qr-box {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     background-color: var(--putih-bersih);
-    border-radius: 8px;
+    border-radius: 12px;
     margin: 0 auto 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .qr-box img {
@@ -698,16 +725,16 @@ button:focus, a:focus {
 .telegram-cta span {
     display: block;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem;
 }
 
-/* Footer Section */
+/* Footer Section - Clean Modern Light Footer */
 .footer {
-    background-color: #081d28;
-    color: rgba(255,255,255,0.75);
-    padding: 5rem 1.5rem 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    background-color: #ffffff;
+    color: #475569;
+    padding: 4.5rem 1.5rem 0;
+    border-top: 1px solid var(--abu-muda);
 }
 
 .footer-container {
@@ -716,14 +743,14 @@ button:focus, a:focus {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1.2fr;
     gap: 4rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
 }
 
 .footer-col h3 {
     font-family: var(--font-heading);
-    font-size: 1.4rem;
-    color: var(--putih-bersih);
-    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    color: var(--biru-bogor);
+    margin-bottom: 1.25rem;
     font-weight: 700;
 }
 
@@ -732,36 +759,44 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: var(--putih-bersih);
-    margin-bottom: 1.25rem;
+    color: var(--biru-bogor);
+    margin-bottom: 1rem;
 }
 
 .footer-about .footer-logo h2 {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
-.footer-about .footer-logo i {
-    font-size: 2rem;
-    color: var(--emas-bogor);
+.footer-about .footer-logo-img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 136, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.footer-about .footer-logo:hover .footer-logo-img {
+    transform: scale(1.1);
 }
 
 .footer-about p {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 0.85rem;
+    color: #64748b;
 }
 
 .footer-links-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.75rem;
 }
 
 .footer-links-list a {
-    color: rgba(255,255,255,0.7);
+    color: #475569;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
@@ -769,14 +804,14 @@ button:focus, a:focus {
 }
 
 .footer-links-list a:hover {
-    color: var(--emas-bogor);
+    color: var(--hijau-aman);
 }
 
 .footer-contact-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.75rem;
 }
 
 .footer-contact-list li {
@@ -784,6 +819,7 @@ button:focus, a:focus {
     align-items: flex-start;
     gap: 0.75rem;
     font-size: 0.95rem;
+    color: #475569;
 }
 
 .footer-contact-list i {
@@ -793,13 +829,14 @@ button:focus, a:focus {
 }
 
 .footer-bottom-bar {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--abu-muda);
+    padding: 1.75rem 1.5rem;
     text-align: center;
-    background-color: #05141c;
+    background-color: #f8fafc;
     margin: 0 -1.5rem;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.5);
+    color: #64748b;
+    font-weight: 500;
 }
 
 .footer-bottom-bar p {
@@ -882,10 +919,17 @@ button:focus, a:focus {
 .stat-box {
     background-color: var(--putih-bersih);
     border: 1px solid var(--abu-muda);
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: var(--bayangan-halus);
+    border-radius: 14px;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 0 2px 12px rgba(10, 79, 110, 0.06);
     text-align: center;
+    transition: all 0.25s ease;
+    border-top: 4px solid var(--biru-bogor);
+}
+
+.stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(10, 79, 110, 0.12);
 }
 
 .stat-number {
@@ -909,13 +953,12 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.85rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--merah-bahaya);
-    background-color: rgba(192, 39, 27, 0.08);
-    padding: 4px 10px;
+    background-color: rgba(220, 38, 38, 0.08);
+    padding: 6px 14px;
     border-radius: 50px;
-    border: 1px solid rgba(192, 39, 27, 0.25);
-    margin-left: 0.75rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .dashboard-live-dot {
@@ -926,7 +969,40 @@ button:focus, a:focus {
     animation: pulse-danger-dot 1.2s infinite;
 }
 
-/* Chart Container & Panel styles */
+/* Status Indicator Pills */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background-color: var(--putih-bersih);
+    border: 1px solid var(--abu-muda);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--abu-teks);
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #94a3b8;
+    display: inline-block;
+}
+
+.pulse-dot.connected {
+    background-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+    animation: pulse-dot-anim 1.5s infinite;
+}
+
+@keyframes pulse-dot-anim {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+}
+
 .chart-panel-card {
     background-color: var(--putih-bersih);
     border: 1px solid var(--abu-muda);
@@ -1487,7 +1563,8 @@ button:focus, a:focus {
         left: -100%;
         top: 65px;
         flex-direction: column;
-        background-color: var(--biru-bogor);
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--abu-muda);
         width: 100%;
         height: calc(100vh - 65px);
         text-align: center;
