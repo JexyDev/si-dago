@@ -48,13 +48,30 @@
     <!-- 3. Hero Section - Bright Modern Light Theme -->
     <section class="hero">
         <div class="hero-content">
-            <span class="hero-label">KONDISI REAL-TIME SELOKAN KOTA BOGOR</span>
+            <span class="hero-label">📡 SENSOR LIVE IOT: DRAINASE UTAMA SMK WIKRAMA BOGOR</span>
             <br>
-            <div class="hero-status-box status-aman">
-                <div class="hero-status-text">🟢 AMAN</div>
+            <div class="hero-status-box status-aman" id="hero-status-box">
+                <div class="hero-status-text" id="hero-status-text">🟢 AMAN</div>
             </div>
-            <h2 class="hero-title">Bogor Hari Ini Cenderung Kondusif</h2>
-            <p class="hero-subtitle">Seluruh titik pantau sensor selokan dalam status normal. Aliran air lancar dan tidak ada penumpukan sampah kritis.</p>
+            
+            <!-- Live Data Source Detail Box -->
+            <div style="background-color: var(--putih-bersih); border: 1px solid var(--abu-muda); border-radius: 12px; padding: 1.25rem; margin: 0 auto 2rem; max-width: 650px; box-shadow: var(--bayangan-halus); font-size: 0.95rem; text-align: left;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--krem-latar); padding-bottom: 0.5rem;">
+                    <strong style="color: var(--biru-bogor); font-size: 1rem;"><i class="bx bx-broadcast" style="color: var(--merah-bahaya);"></i> Status Pembacaan Sensor Terbaru</strong>
+                    <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Realtime via Socket.IO</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; font-size: 0.9rem;">
+                    <div>💧 Air Live: <strong id="hero-water-val" style="color: var(--biru-bogor); font-size: 1.1rem;">0.0 cm</strong></div>
+                    <div>🌧️ Cuaca: <strong id="hero-rain-val">Cerah</strong></div>
+                    <div>🗑️ Gorong-gorong: <strong id="hero-trash-val" style="color: var(--hijau-aman);">Lancar / Bersih</strong></div>
+                </div>
+                <div style="margin-top: 0.75rem; font-size: 0.8rem; color: #64748b; border-top: 1px dashed var(--abu-muda); padding-top: 0.5rem;">
+                    📍 <strong>Lokasi Sensor:</strong> Drainase Utama SMK Wikrama (Jl. Raya Wangun, Kel. Sindangsari, Kec. Bogor Timur)
+                </div>
+            </div>
+
+            <h2 class="hero-title" style="font-size: 2rem;">Kondisi Selokan Kota Bogor</h2>
+            <p class="hero-subtitle">Data dipantau secara langsung 24 jam menggunakan mikrokontroler ESP32, sensor ultrasonik HC-SR04, sensor hujan YL-83, dan sensor infrared FC-51.</p>
             <div class="hero-buttons">
                 <a href="notifikasi.html" class="btn btn-primary"><i class="bx bx-bell"></i> Aktifkan Peringatan Telegram</a>
                 <a href="peta.html" class="btn btn-secondary"><i class="bx bx-map-alt"></i> Lihat Peta Selokan Live</a>

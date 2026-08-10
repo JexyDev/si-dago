@@ -21,6 +21,13 @@ const topStatusBar = document.getElementById('top-status-bar');
 const topStatusText = document.getElementById('top-status-text');
 const eventLogTbody = document.getElementById('event-log-tbody');
 
+// Hero Home Page Elements (index.html)
+const heroStatusBox = document.getElementById('hero-status-box');
+const heroStatusText = document.getElementById('hero-status-text');
+const heroWaterVal = document.getElementById('hero-water-val');
+const heroRainVal = document.getElementById('hero-rain-val');
+const heroTrashVal = document.getElementById('hero-trash-val');
+
 // Stats Counters Elements
 const statsAmanCount = document.getElementById('stats-aman-count');
 const statsWaspadaCount = document.getElementById('stats-waspada-count');
@@ -250,6 +257,18 @@ function updateUI(tinggiAir, kondisiHujan, adaSampah) {
     }
 
     currentStatusState = newStatus;
+
+    // Update Hero elements on index.html if present
+    if (heroWaterVal) heroWaterVal.innerText = tinggiAir.toFixed(1) + " cm";
+    if (heroRainVal) heroRainVal.innerText = kondisiHujan;
+    if (heroTrashVal) {
+        heroTrashVal.innerText = trashText;
+        heroTrashVal.style.color = adaSampah ? "var(--merah-bahaya)" : "var(--hijau-aman)";
+    }
+    if (heroStatusBox && heroStatusText) {
+        heroStatusBox.className = "hero-status-box " + (newStatus === "bahaya" ? "status-bahaya" : newStatus === "waspada" ? "status-waspada" : "status-aman");
+        heroStatusText.innerText = newStatus === "bahaya" ? "🔴 BAHAYA" : newStatus === "waspada" ? "🟡 WASPADA" : "🟢 AMAN";
+    }
 
     // Apply main styles based on status
     if (alertCardEl && liveCardBadge && statusTitleEl && statusDescEl) {
