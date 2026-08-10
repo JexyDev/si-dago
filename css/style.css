@@ -81,14 +81,15 @@ button:focus, a:focus {
 .top-status-bar.status-bahaya { background-color: var(--merah-bahaya); animation: pulse-bg-danger 2s infinite; }
 
 .navbar {
-    background-color: var(--biru-bogor);
-    color: var(--putih-bersih);
+    background-color: #ffffff;
+    color: var(--abu-teks);
     position: sticky;
     top: 0;
     width: 100%;
     height: 75px;
     z-index: 999;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
+    border-bottom: 1px solid var(--abu-muda);
     display: flex;
     align-items: center;
     transition: height 0.3s ease;
@@ -109,23 +110,24 @@ button:focus, a:focus {
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
-    color: var(--putih-bersih);
+    color: var(--abu-teks);
 }
 
 .brand i {
     font-size: 2.2rem;
-    color: var(--emas-bogor);
+    color: var(--hijau-aman);
 }
 
 .brand-text h1 {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.1;
+    color: var(--biru-bogor);
 }
 
 .brand-text span {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-family: var(--font-body);
     font-weight: 700;
     letter-spacing: 1px;
@@ -136,26 +138,25 @@ button:focus, a:focus {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 1.25rem;
     align-items: center;
 }
 
 .nav-link {
-    color: var(--putih-bersih);
+    color: #475569;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
     transition: all 0.2s ease;
     border-bottom: 2px solid transparent;
 }
 
 .nav-link:hover, .nav-link.active {
-    color: var(--emas-bogor);
-    border-bottom-color: var(--emas-bogor);
-    background-color: rgba(200, 134, 10, 0.1);
-    border-radius: 6px;
+    color: var(--hijau-aman);
+    border-bottom-color: var(--hijau-aman);
+    background-color: rgba(5, 150, 105, 0.08);
 }
 
 .nav-toggle {
@@ -163,7 +164,7 @@ button:focus, a:focus {
     font-size: 1.8rem;
     background: none;
     border: none;
-    color: var(--putih-bersih);
+    color: var(--abu-teks);
     cursor: pointer;
     padding: 0.5rem;
 }
@@ -1512,7 +1513,8 @@ button:focus, a:focus {
         left: -100%;
         top: 65px;
         flex-direction: column;
-        background-color: var(--biru-bogor);
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--abu-muda);
         width: 100%;
         height: calc(100vh - 65px);
         text-align: center;
