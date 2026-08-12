@@ -2165,4 +2165,149 @@ button:focus, a:focus {
     }
 }
 
+/* ============================================================
+   SI DAGO — MODERN TOAST NOTIFICATION SYSTEM
+   ============================================================ */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.toast-card {
+    pointer-events: auto;
+    min-width: 320px;
+    max-width: 440px;
+    background: rgba(15, 41, 55, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    animation: toastSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.toast-card.toast-hiding {
+    animation: toastSlideOut 0.3s ease forwards;
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+}
+
+.toast-card.toast-success {
+    border-left: 4px solid #10B981;
+}
+.toast-card.toast-success .toast-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34D399;
+}
+
+.toast-card.toast-warning {
+    border-left: 4px solid #F59E0B;
+}
+.toast-card.toast-warning .toast-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: #FBBF24;
+}
+
+.toast-card.toast-danger {
+    border-left: 4px solid #EF4444;
+}
+.toast-card.toast-danger .toast-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #F87171;
+}
+
+.toast-card.toast-info {
+    border-left: 4px solid #3B82F6;
+}
+.toast-card.toast-info .toast-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+}
+
+.toast-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.toast-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: #CBD5E1;
+    line-height: 1.35;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-close:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px) scale(0.9);
+    }
+}
+
 

@@ -59,7 +59,7 @@
                 <img src="img/logo-icon.svg" alt="SI DAGO Logo" class="brand-logo">
                 <div class="brand-text">
                     <h1>SI DAGO</h1>
-                    <span>Pantau Selokan Bogor</span>
+                    <span>Sistem Deteksi Air Gorong-Gorong berbasis IoT</span>
                 </div>
             </a>
             <button class="nav-toggle" id="nav-toggle" aria-label="Buka Menu">
@@ -260,32 +260,28 @@
         // 4. Marker Objects storage
         const markerObjects = [];
 
-        // 5. Build marker layout helper
-        function createCustomIcon(status) {
-            let color = "var(--hijau-aman)";
-            let className = "";
-            if (status === "waspada") {
-                color = "var(--kuning-waspada)";
-            } else if (status === "bahaya") {
-                color = "var(--merah-bahaya)";
-                return L.divIcon({
-                    className: 'pulsing-marker-red',
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
-                });
-            }
-
-            return L.divIcon({
-                html: `<div style="background-color: ${color}; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3)"></div>`,
-                className: '',
-                iconSize: [18, 18],
-                iconAnchor: [9, 9]
-            });
-        }
-
         // 6. Draw markers on Map
         sensorPoints.forEach((point) => {
-            const marker = L.marker([point.lat, point.lng], { icon: createCustomIcon(point.status) }).addTo(map);
+            let marker;
+            if (point.status === "bahaya") {
+                marker = L.marker([point.lat, point.lng], { 
+                    icon: L.divIcon({
+                        className: 'pulsing-marker-red',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    }) 
+                }).addTo(map);
+            } else {
+                let color = point.status === "waspada" ? "#D97706" : "#059669";
+                marker = L.circleMarker([point.lat, point.lng], {
+                    radius: 9,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    color: "white",
+                    weight: 3,
+                    opacity: 1
+                }).addTo(map);
+            }
 
             // Set beautiful popup template
             const popupHTML = `
@@ -310,6 +306,10 @@
             marker.bindPopup(popupHTML);
             markerObjects.push({ id: point.id, marker: marker });
         });
+
+        // Ensure all pins (including SMK Wikrama) are visible
+        const bounds = L.latLngBounds(sensorPoints.map(p => [p.lat, p.lng]));
+        map.fitBounds(bounds, { padding: [30, 30] });
 
         // 7. Focus Marker from Sidebar List
         function focusMarker(id) {

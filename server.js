@@ -175,12 +175,12 @@ _Pesan otomatis dari Server SI DAGO Kota Bogor • ${new Date().toLocaleTimeStri
 let lastNotifStatus   = "aman";
 let lastNotifSentTime = 0;
 let isFirstDataReceived = false;
-let bahayaCounter     = 0; // Hitung sampel BAHAYA berturut-turut (15x @2s = 30 detik)
-const BAHAYA_THRESHOLD_SAMPLES = 15; // Wajib 30 detik bertahan sebelum konfirmasi BAHAYA
+let bahayaCounter     = 0; // Hitung sampel BAHAYA berturut-turut
+// ⚙️ TESTING: 5 sampel = ~10 detik. Untuk produksi: ganti ke 15 (30 detik)
+// ponytail: naikan BAHAYA_THRESHOLD_SAMPLES=15 & NOTIF_COOLDOWN=5*60*1000 saat produksi
+const BAHAYA_THRESHOLD_SAMPLES = 5;
 
-// ⚙️ PERCOBAAN: cooldown 30 detik. Untuk produksi, ganti ke: 5 * 60 * 1000
-// ponytail: produksi pakai 5 menit, naikan kembali setelah demo selesai
-const NOTIF_COOLDOWN = 30 * 1000; // 30 detik
+const NOTIF_COOLDOWN = 15 * 1000; // 15 detik (testing). Produksi: 5 * 60 * 1000
 
 // ============================================================
 // KONDISI BAHAYA SEJATI: KETIGA SENSOR SERENTAK EKSTREM
@@ -451,10 +451,14 @@ _Sistem pemantauan 24 jam SI DAGO Kota Bogor aktif._`;
         const persistent      = bahayaCounter >= BAHAYA_THRESHOLD_SAMPLES;
         const bahayaSejati    = isBahayaSejati(parsedTinggi, parsedHujan, parsedSampah);
 
+        // DEBUG: tampilkan semua kondisi agar mudah trace masalah
+        console.log(`[DEBUG NOTIF] counter=${bahayaCounter}/${BAHAYA_THRESHOLD_SAMPLES} | persistent=${persistent} | bahayaSejati=${bahayaSejati} | cooldownLewat=${cooldownLewat}`);
+        console.log(`[DEBUG SENSOR] Air=${parsedTinggi}cm(>=${15.0}?) | Hujan="${parsedHujan}"(lebat/badai?) | Sampah=${parsedSampah}`);
+
         if (!persistent) {
-            console.log(`⏳ BAHAYA belum persistent: baru ${bahayaCounter * 2}s, tunggu 30s.`);
+            console.log(`⏳ BAHAYA belum persistent: ${bahayaCounter}/${BAHAYA_THRESHOLD_SAMPLES} sampel (~${bahayaCounter * 2}s dari ${BAHAYA_THRESHOLD_SAMPLES * 2}s).`);
         } else if (!bahayaSejati) {
-            console.log(`🛡️ BAHAYA ditahan: sensor tidak semua ekstrem (lihat log di atas).`);
+            console.log(`🛡️ BAHAYA ditahan: salah satu sensor belum ekstrem (butuh Air>=15cm + Hujan Lebat/Badai + Sampah=true).`);
         } else if (!cooldownLewat) {
             console.log(`🔕 Cooldown aktif: tunggu ${Math.round((NOTIF_COOLDOWN - (timeNow - lastNotifSentTime)) / 1000)}s lagi.`);
         } else {

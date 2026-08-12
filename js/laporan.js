@@ -355,12 +355,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Dynamic Toast Notification Helper
+    function showToast(message, type = 'info', title = null) {
+        let container = document.querySelector('.toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast-card toast-${type}`;
+
+        let iconClass = 'bx-info-circle';
+        let defaultTitle = 'Informasi';
+
+        if (type === 'success') {
+            iconClass = 'bx-check-circle';
+            defaultTitle = 'Berhasil';
+        } else if (type === 'warning') {
+            iconClass = 'bx-error';
+            defaultTitle = 'Peringatan';
+        } else if (type === 'danger') {
+            iconClass = 'bx-x-circle';
+            defaultTitle = 'Gagal';
+        }
+
+        const toastTitle = title || defaultTitle;
+
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="bx ${iconClass}"></i></div>
+            <div class="toast-content">
+                <div class="toast-title">${toastTitle}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close" onclick="this.parentElement.remove()"><i class="bx bx-x"></i></button>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('toast-hiding');
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 300);
+        }, 3500);
+    }
+    window.showToast = showToast;
+
     // Export Functions
     // 1. Export CSV with UTF-8 BOM for Excel
     if (btnExportCsv) {
         btnExportCsv.addEventListener('click', () => {
             if (filteredData.length === 0) {
-                alert('Tidak ada data untuk diekspor!');
+                showToast('Tidak ada data untuk diekspor!', 'warning');
                 return;
             }
 
@@ -384,6 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             downloadFile(csvContent, `Laporan_SI_DAGO_${filterPeriode.value}_${Date.now()}.csv`, 'text/csv;charset=utf-8;');
+            showToast('Laporan CSV berhasil diunduh!', 'success');
         });
     }
 
@@ -391,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnExportExcel) {
         btnExportExcel.addEventListener('click', () => {
             if (filteredData.length === 0) {
-                alert('Tidak ada data untuk diekspor!');
+                showToast('Tidak ada data untuk diekspor!', 'warning');
                 return;
             }
 
@@ -456,6 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             downloadFile(excelHtml, `Laporan_SI_DAGO_${filterPeriode.value}_${Date.now()}.xls`, 'application/vnd.ms-excel');
+            showToast('Laporan Excel berhasil diunduh!', 'success');
         });
     }
 
@@ -469,7 +519,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Copy to Clipboard
     if (btnExportCopy) {
         btnExportCopy.addEventListener('click', () => {
-            if (filteredData.length === 0) return;
+            if (filteredData.length === 0) {
+                showToast('Tidak ada data untuk disalin!', 'warning');
+                return;
+            }
             let text = "LAPORAN SI DAGO KOTA BOGOR\n";
             text += "No | Waktu | Daerah | Ketinggian | Hujan | Sampah | Status\n";
             text += "--------------------------------------------------------\n";
@@ -479,9 +532,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             navigator.clipboard.writeText(text).then(() => {
-                alert('✓ Data laporan berhasil disalin ke clipboard!');
+                showToast('Data laporan berhasil disalin ke clipboard!', 'success');
             }).catch(err => {
                 console.error('Failed copy clipboard:', err);
+                showToast('Gagal menyalin data ke clipboard.', 'danger');
             });
         });
     }

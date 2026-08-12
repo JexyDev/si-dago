@@ -20,7 +20,7 @@
 ---
 
 ### **SLIDE 1: Title Slide (Pembuka Utama)**
-- **Judul Slide:** SI DAGO: Sistem Cerdas Pemantauan Drainase & Peringatan Dini Banjir Kota Bogor
+- **Judul Slide:** SI DAGO: Sistem Cerdas Peringatan Dini Banjir Drainase Kota berbasis IoT
 - **Sub-judul:** Integrasi Real-time IoT ESP32, Multi-Factor Scoring Algorithm, Node.js WebSocket Engine, dan Push Notification Telegram Instant 24 Jam.
 - **Badge:** 🏆 BOGOR INNOVATION AWARDS 2026 • SMK WIKRAMA BOGOR
 - **Poin Kunci:**
@@ -28,7 +28,7 @@
   2. *Realtime Sync Engine:* Server Node.js Express + WebSocket Socket.IO tanpa refresh browser.
   3. *Telegram Alert System:* Push notification langsung via Telegram Bot API dengan filter anti-spam.
 - **🗣️ Naskah Presenter (Kalimat Ucap):**
-  > *"Selamat pagi/siang Bapak/Ibu Dewan Juri Bogor Innovation Awards 2026. Kami dari SMK Wikrama Bogor bangga mempersembahkan SI DAGO — Sistem Cerdas Pemantauan Drainase dan Peringatan Dini Banjir Kota Bogor. SI DAGO adalah solusi mitigasi berbasis IoT dan web realtime yang dirancang khusus untuk memproteksi warga dari luapan selokan dan gorong-gorong tersumbat."*
+  > *"Selamat pagi/siang Bapak/Ibu Dewan Juri Bogor Innovation Awards 2026. Kami dari SMK Wikrama Bogor bangga mempersembahkan SI DAGO — Sistem Deteksi Air Gorong-Gorong. SI DAGO adalah solusi mitigasi berbasis IoT dan web realtime yang dirancang khusus untuk memproteksi warga dari luapan selokan dan gorong-gorong tersumbat."*
 
 ---
 
@@ -243,6 +243,6 @@
 ---
 
 ### **SLIDE 22: Penutup & Sesi Tanya Jawab (Q&A)**
-- **Kalimat Penutup:** SI DAGO — "Pantau Selokan Cekatan, Bogor Tangguh Bencana."
+- **Kalimat Penutup:** SI DAGO — "Sistem Deteksi Air Gorong-Gorong, Bogor Tangguh Bencana."
 - **🗣️ Naskah Presenter:**
   > *"Sekian presentasi dari kami. SI DAGO siap menjadi solusi nyata pertahanan banjir Kota Bogor. Terima kasih atas perhatian Bapak/Ibu Dewan Juri, kami siap memasuki sesi tanya jawab."*
